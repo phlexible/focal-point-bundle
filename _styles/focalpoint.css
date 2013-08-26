@@ -1,0 +1,16 @@
+.fp-point {
+    background: url("/makeweb/resources/asset/image/focalpoint/target.png") no-repeat scroll 0 0 transparent;
+    position: absolute;
+    left: 190px;
+    top: 190px;
+    width: 30px;
+    height: 30px;
+    cursor: move;
+    /* border: 1px solid black; */
+    /* background-color: red; */
+}
+.fp-boundary {
+    position: absolute;
+    border: 2px dashed red;
+    outline: 400px solid rgba(255, 255, 255, 0.7)
+}

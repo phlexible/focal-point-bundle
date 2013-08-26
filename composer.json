@@ -1,0 +1,21 @@
+{
+    "name": "phlexible/focal-point-component",
+    "description": "phlexible.media focal point component",
+    "license": "proprietary",
+    "autoload": {
+        "psr-0": { 
+            "Media_FocalPoint_": ""
+        }
+    },
+    "target-dir": "Media/FocalPoint",
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://packages.phlexible.net/v1/"
+        }
+    ],
+    "minimum-stability": "stable"
+}

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<translations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="http://www.phlexible.net/schemas/1.0/t9n.xsd">
+  <page id="focalpoint" lang="en" section="backend" namespace="media">
+    <item key="component_description">Focal point</item>
+    <item key="component_name">Focal point</item>
+    <item key="focal_point">Focal point</item>
+    <item key="no_focal_point">Centered focal point</item>
+    <item key="use_focal_point">Individual focal point</item>
+    <item key="never_crop">Never crop image</item>
+    <item key="image_templates">Image templates</item>
+    <item key="safe_area">Safe area</item>
+    <item key="title">Title</item>
+    <item key="save">Save</item>
+  </page>
+</translations>
