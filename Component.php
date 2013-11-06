@@ -28,11 +28,11 @@ class Media_FocalPoint_Component extends MWF_Component_Abstract
      */
     public function __construct()
     {
-        $this->setVersion('0.7.1');
-        $this->setId('focalpoint');
-        $this->setFile(__FILE__);
-        $this->setPackage('media');
-        $this->setOrder('after mediamanager');
+        $this
+            ->setVersion('0.7.1')
+            ->setId('focalpoint')
+            ->setFile(__FILE__)
+            ->setPackage('media');
     }
 
     public function getAcl()
