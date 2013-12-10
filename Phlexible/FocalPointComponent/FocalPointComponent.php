@@ -16,7 +16,7 @@ use Zend_Controller_Router_Route as Route;
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */
-class Media_FocalPoint_Component extends AbstractComponent
+class FocalPointComponent extends AbstractComponent
 {
     const RESOURE_FOCAL_POINT = 'focalpoint';
 

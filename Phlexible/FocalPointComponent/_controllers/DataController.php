@@ -1,5 +1,7 @@
 <?php
 
+use Phlexible\MediaTemplatesComponent\ImageTemplate;
+
 class Focalpoint_DataController extends MWF_Controller_Action
 {
     public function getAction()
@@ -166,8 +168,12 @@ class Focalpoint_DataController extends MWF_Controller_Action
                 $templateKeys[] = $cropTemplate->key;
             }
 
-            $queueBatch = new Media_Cache_Queue_Batch();
-            $cnt        = $queueBatch->add($templateKeys, array($file->getID()));
+            $batch = new \Phlexible\MediaCacheComponent\Queue\Batch();
+            $batch
+                ->file($file)
+                ->templates($templateKeys);
+            $batchQueuer = $this->getContainer()->mediaCacheBatchQueuer;
+            $cnt = $batchQueuer->add($batch);
 
             $result = MWF_Ext_Result::encode(true, $this->_hasParam('id') ? $this->_getParam('id') : null, 'Focal point saved.');
         }
@@ -258,7 +264,7 @@ class Focalpoint_DataController extends MWF_Controller_Action
                 ),
             );
 
-            $fi = new Brainbits_Filter_Input($filters, $validators, $this->_getAllParams());
+            $fi = new Brainbits_Filter_Input($filters, $validators, $this->getAllParams());
 
             if (!$fi->isValid())
             {
@@ -267,11 +273,11 @@ class Focalpoint_DataController extends MWF_Controller_Action
             // end: input validation
             // ------------------------------
 
-            $site  = Media_Site_Manager::getInstance();
+            $site  = $this->getContainer()->mediaSiteManager;
             $file  = $site->getByFileId($fi->file_id)->getFilePeer()->getById($fi->file_id);
             $filePath = $file->getFilePath();
 
-            $template = new Media_Templates_Image();
+            $template = new ImageTemplate();
             $template->setParameter('width', 400);
             $template->setParameter('height', 400);
             $template->setParameter('method', 'fit');
@@ -280,19 +286,19 @@ class Focalpoint_DataController extends MWF_Controller_Action
             $toolkit = $template->getAppliedToolkit($filePath);
             $toolkit->setFormat('jpg');
 
-            $filename = $toolkit->save(MWF_Registry::getContainer()->getParam(':app.temp_dir') . $fi->file_id . '_' . $fi->file_version, true);
+            $tempDir = $this->getContainer()->getParameter(':app.temp_dir');
+            $filename = $toolkit->save($tempDir . $fi->file_id . '_' . $fi->file_version, true);
 
-            header('Content-type: image/jpg');
-            readfile($filename);
-
-            exit(0);
+            $this->_response
+                ->setContentType('image/jpg')
+                ->setFile($filename);
         }
         catch (Exception $e)
         {
-            echo $e->getMessage();die;
+            $this->_response
+                ->setHttpResponseCode(500)
+                ->setBody($e->getMessage());
         }
-
-        Brainbits_Http_Response::send500();
     }
 
     public function templatesAction()
@@ -332,14 +338,12 @@ class Focalpoint_DataController extends MWF_Controller_Action
 
     protected function _getCropTemplates()
     {
-        $templates = Media_Templates_Peer::getAll(true);
+        $templates = $this->getContainer()->mediatemplatesRepository->findAll();
 
         $cropTemplates = array();
         foreach ($templates as $template)
         {
-            /* @var $template Media_Templates_Abstract */
-
-            if (!$template instanceof Media_Templates_Image)
+            if (!$template instanceof ImageTemplate)
             {
                 continue;
             }
