@@ -1,31 +1,25 @@
 <?php
 /**
- * MAKEweb
+ * phlexible
  *
- * PHP Version 5
- *
- * @category    MAKEweb
- * @package     Media_FocalPoint
- * @copyright   2007 brainbits GmbH (http://www.brainbits.net)
- * @version     SVN: $Id: Generator.php 2312 2007-01-25 18:46:27Z swentz $
+ * @copyright 2007-2013 brainbits GmbH (http://www.brainbits.net)
+ * @license   proprietary
  */
 
+namespace Phlexible\FocalPointComponent;
+
+use MWF_Component_Abstract as AbstractComponent;
+use Zend_Controller_Router_Route as Route;
+
 /**
- * MetaSystem Component
+ * Focal point component
  *
- * @category    MAKEweb
- * @package     Media_FocalPoint
- * @author      Stephan Wentz <sw@brainbits.net>
- * @copyright   2007 brainbits GmbH (http://www.brainbits.net)
+ * @author Stephan Wentz <sw@brainbits.net>
  */
-class Media_FocalPoint_Component extends MWF_Component_Abstract
+class Media_FocalPoint_Component extends AbstractComponent
 {
     const RESOURE_FOCAL_POINT = 'focalpoint';
 
-    /**
-     * Constructor
-     * Initialses the Component values
-     */
     public function __construct()
     {
         $this
@@ -53,7 +47,7 @@ class Media_FocalPoint_Component extends MWF_Component_Abstract
     public function getRoutes()
     {
         return array(
-            'focalpoint_data' => new MWF_Controller_Router_Route(
+            'focalpoint_data' => new Route(
                 '/focalpoint/data/:action/*',
                 array('module' => 'focalpoint', 'controller' => 'data', 'action' => 'index'),
                 array('_resource' => self::RESOURE_FOCAL_POINT)

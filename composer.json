@@ -4,10 +4,9 @@
     "license": "proprietary",
     "autoload": {
         "psr-0": { 
-            "Media_FocalPoint_": ""
+            "Phlexible\\FocalPointComponent\\": ""
         }
     },
-    "target-dir": "Media/FocalPoint",
     "require": {
         "php": ">=5.3.0",
         "phlexible/phlexible-media": "*"
