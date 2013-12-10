@@ -26,7 +26,7 @@ class Media_FocalPoint_Component extends AbstractComponent
             ->setVersion('0.7.1')
             ->setId('focalpoint')
             ->setFile(__FILE__)
-            ->setPackage('media');
+            ->setPackage('phlexible');
     }
 
     public function getAcl()
