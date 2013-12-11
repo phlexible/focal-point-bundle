@@ -8,7 +8,7 @@
 
 namespace Phlexible\FocalPointComponent;
 
-use MWF_Component_Abstract as AbstractComponent;
+use Phlexible\Component\AbstractComponent;
 use Zend_Controller_Router_Route as Route;
 
 /**
