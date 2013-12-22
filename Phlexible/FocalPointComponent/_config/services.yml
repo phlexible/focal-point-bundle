@@ -1,0 +1,15 @@
+tags:
+    - ["asset.translation", {namespace: "media.strings.Focalpoint", page: focalpoint}]
+
+services:
+    # assets
+    focalpointAssetScripts:
+        class: Phlexible\FocalPointComponent\Asset\ScriptCollection
+        arguments: ["%focalpoint.asset.script_path%"]
+        tags:
+            - ["asset.script"]
+    focalpointAssetCss:
+        class: Phlexible\FocalPointComponent\Asset\CssCollection
+        arguments: ["%focalpoint.asset.css_path%"]
+        tags:
+            - ["asset.css"]

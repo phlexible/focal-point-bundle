@@ -54,34 +54,4 @@ class FocalPointComponent extends AbstractComponent
             ),
         );
     }
-
-    public function getScripts()
-    {
-        $path = $this->getPath().'/_scripts/';
-
-        return array(
-            $path . 'Definitions.js',
-            $path . 'MainPanel.js',
-            $path . 'FocalpointPanel.js',
-        );
-    }
-
-    public function getStyles()
-    {
-        $path = $this->getPath().'/_styles/';
-
-        return array(
-            $path . 'focalpoint.css',
-        );
-    }
-
-    public function getTranslations()
-    {
-        $t9n  = $this->getContainer()->t9n;
-        $page = $t9n->focalpoint->toArray();
-
-        return array(
-            'Media.strings.Focalpoint' => $page
-        );
-    }
 }
