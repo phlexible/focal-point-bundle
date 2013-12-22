@@ -1,8 +1,22 @@
 <?php
+/**
+ * phlexible
+ *
+ * @copyright 2007-2013 brainbits GmbH (http://www.brainbits.net)
+ * @license   proprietary
+ */
 
+namespace Phlexible\FocalPointComponent\Controller;
+
+use Phlexible\CoreComponent\Controller\Action\Action;
 use Phlexible\MediaTemplatesComponent\ImageTemplate;
 
-class Focalpoint_DataController extends MWF_Controller_Action
+/**
+ * Data controller
+ *
+ * @author Stephan Wentz <sw@brainbits.net>
+ */
+class Focalpoint_DataController extends Action
 {
     public function getAction()
     {
@@ -14,7 +28,7 @@ class Focalpoint_DataController extends MWF_Controller_Action
 
             $validators = array(
                 'file_id' => array(
-                    new Brainbits_Validate_Uuid(),
+                    new \Brainbits_Validate_Uuid(),
                     'presence' => 'required'
                 ),
                 'file_version' => array(
@@ -31,16 +45,16 @@ class Focalpoint_DataController extends MWF_Controller_Action
                 ),
             );
 
-            $fi = new Brainbits_Filter_Input($filters, $validators, $this->_getAllParams());
+            $fi = new \Brainbits_Filter_Input($filters, $validators, $this->_getAllParams());
 
             if (!$fi->isValid())
             {
-                throw new Brainbits_Filter_Exception('Error occured', 0, $fi);
+                throw new \Brainbits_Filter_Exception('Error occured', 0, $fi);
             }
             // end: input validation
             // ------------------------------
 
-            $site  = Media_Site_Manager::getInstance();
+            $site  = $this->getContainer()->mediaSiteManager;
             $file  = $site->getByFileId($fi->file_id)->getFilePeer()->getById($fi->file_id);
             $asset = $file->getAsset();
 
@@ -69,15 +83,15 @@ class Focalpoint_DataController extends MWF_Controller_Action
                 'focalpoint_y'      => $pointY,
             );
 
-            $result = MWF_Ext_Result::encode(true, $this->_hasParam('id') ? $this->_getParam('id') : null, null, $data);
+            $result = \MWF_Ext_Result::encode(true, $this->_hasParam('id') ? $this->_getParam('id') : null, null, $data);
         }
-        catch (Brainbits_Filter_Exception $e)
+        catch (\Brainbits_Filter_Exception $e)
         {
-            $result = MWF_Ext_Result::encode(false, $this->_hasParam('id') ? $this->_getParam('id') : null, $e->getFilterMessagesAsString());
+            $result = \MWF_Ext_Result::encode(false, $this->_hasParam('id') ? $this->_getParam('id') : null, $e->getFilterMessagesAsString());
         }
-        catch (Exception $e)
+        catch (\Exception $e)
         {
-            $result = MWF_Ext_Result::encode(false, $this->_hasParam('id') ? $this->_getParam('id') : null, $e->getMessage());
+            $result = \MWF_Ext_Result::encode(false, $this->_hasParam('id') ? $this->_getParam('id') : null, $e->getMessage());
         }
 
         $this->_response->setAjaxPayload($result);
@@ -93,7 +107,7 @@ class Focalpoint_DataController extends MWF_Controller_Action
 
             $validators = array(
                 'file_id' => array(
-                    new Brainbits_Validate_Uuid(),
+                    new \Brainbits_Validate_Uuid(),
                     'presence' => 'required'
                 ),
                 'file_version' => array(
@@ -123,16 +137,16 @@ class Focalpoint_DataController extends MWF_Controller_Action
                 ),
             );
 
-            $fi = new Brainbits_Filter_Input($filters, $validators, $this->_getAllParams());
+            $fi = new \Brainbits_Filter_Input($filters, $validators, $this->_getAllParams());
 
             if (!$fi->isValid())
             {
-                throw new Brainbits_Filter_Exception('Error occured', 0, $fi);
+                throw new \Brainbits_Filter_Exception('Error occured', 0, $fi);
             }
             // end: input validation
             // ------------------------------
 
-            $site = Media_Site_Manager::getInstance();
+            $site = $this->getContainer()->mediaSiteManager;
             $file = $site->getByFileId($fi->file_id)->getFilePeer()->getById($fi->file_id);
             $asset = $file->getAsset();
 
@@ -175,15 +189,15 @@ class Focalpoint_DataController extends MWF_Controller_Action
             $batchQueuer = $this->getContainer()->mediaCacheBatchQueuer;
             $cnt = $batchQueuer->add($batch);
 
-            $result = MWF_Ext_Result::encode(true, $this->_hasParam('id') ? $this->_getParam('id') : null, 'Focal point saved.');
+            $result = \MWF_Ext_Result::encode(true, $this->_hasParam('id') ? $this->_getParam('id') : null, 'Focal point saved.');
         }
-        catch (Brainbits_Filter_Exception $e)
+        catch (\Brainbits_Filter_Exception $e)
         {
-            $result = MWF_Ext_Result::encode(false, $this->_hasParam('id') ? $this->_getParam('id') : null, $e->getFilterMessagesAsString());
+            $result = \MWF_Ext_Result::encode(false, $this->_hasParam('id') ? $this->_getParam('id') : null, $e->getFilterMessagesAsString());
         }
-        catch (Exception $e)
+        catch (\Exception $e)
         {
-            $result = MWF_Ext_Result::encode(false, $this->_hasParam('id') ? $this->_getParam('id') : null, $e->getMessage());
+            $result = \MWF_Ext_Result::encode(false, $this->_hasParam('id') ? $this->_getParam('id') : null, $e->getMessage());
         }
 
         $this->_response->setAjaxPayload($result);
@@ -255,7 +269,7 @@ class Focalpoint_DataController extends MWF_Controller_Action
 
             $validators = array(
                 'file_id' => array(
-                    new Brainbits_Validate_Uuid(),
+                    new \Brainbits_Validate_Uuid(),
                     'presence' => 'required'
                 ),
                 'file_version' => array(
@@ -264,11 +278,11 @@ class Focalpoint_DataController extends MWF_Controller_Action
                 ),
             );
 
-            $fi = new Brainbits_Filter_Input($filters, $validators, $this->getAllParams());
+            $fi = new \Brainbits_Filter_Input($filters, $validators, $this->getAllParams());
 
             if (!$fi->isValid())
             {
-                throw new Brainbits_Filter_Exception('Error occured', 0, $fi);
+                throw new \Brainbits_Filter_Exception('Error occured', 0, $fi);
             }
             // end: input validation
             // ------------------------------
@@ -281,7 +295,7 @@ class Focalpoint_DataController extends MWF_Controller_Action
             $template->setParameter('width', 400);
             $template->setParameter('height', 400);
             $template->setParameter('method', 'fit');
-            $template->setParameter('scale', Brainbits_Toolkit_Image_Imagemagick::SCALE_DOWN);
+            $template->setParameter('scale', \Brainbits_Toolkit_Image_Imagemagick::SCALE_DOWN);
 
             $toolkit = $template->getAppliedToolkit($filePath);
             $toolkit->setFormat('jpg');
@@ -293,7 +307,7 @@ class Focalpoint_DataController extends MWF_Controller_Action
                 ->setContentType('image/jpg')
                 ->setFile($filename);
         }
-        catch (Exception $e)
+        catch (\Exception $e)
         {
             $this->_response
                 ->setHttpResponseCode(500)
@@ -348,7 +362,7 @@ class Focalpoint_DataController extends MWF_Controller_Action
                 continue;
             }
 
-            if ($template->getMethod() !== Brainbits_Toolkit_Image_Interface::RESIZE_METHOD_CROP)
+            if ($template->getMethod() !== \Brainbits_Toolkit_Image_Interface::RESIZE_METHOD_CROP)
             {
                 continue;
             }
