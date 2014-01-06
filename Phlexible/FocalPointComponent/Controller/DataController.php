@@ -20,185 +20,161 @@ class Focalpoint_DataController extends Action
 {
     public function getAction()
     {
-        try
-        {
-            // ------------------------------
-            // start: input validation
-            $filters = array("StripTags", "StringTrim");
+        // ------------------------------
+        // start: input validation
+        $filters = array("StripTags", "StringTrim");
 
-            $validators = array(
-                'file_id' => array(
-                    new \Brainbits_Validate_Uuid(),
-                    'presence' => 'required'
-                ),
-                'file_version' => array(
-                    'Digits',
-                    'presence' => 'required'
-                ),
-                'width' => array(
-                    'Digits',
-                    'presence' => 'required',
-                ),
-                'height' => array(
-                    'Digits',
-                    'presence' => 'required',
-                ),
+        $validators = array(
+            'file_id' => array(
+                new \Brainbits_Validate_Uuid(),
+                'presence' => 'required'
+            ),
+            'file_version' => array(
+                'Digits',
+                'presence' => 'required'
+            ),
+            'width' => array(
+                'Digits',
+                'presence' => 'required',
+            ),
+            'height' => array(
+                'Digits',
+                'presence' => 'required',
+            ),
+        );
+
+        $fi = new \Brainbits_Filter_Input($filters, $validators, $this->_getAllParams());
+
+        if (!$fi->isValid())
+        {
+            throw new \Brainbits_Filter_Exception('Error occured', 0, $fi);
+        }
+        // end: input validation
+        // ------------------------------
+
+        $site  = $this->getContainer()->mediaSiteManager;
+        $file  = $site->getByFileId($fi->file_id)->getFilePeer()->getById($fi->file_id);
+        $asset = $file->getAsset();
+
+        $attributes = $asset->getAttributes();
+
+        $pointActive = (int)$attributes->focalpoint_active;
+        $pointX      = $attributes->focalpoint_x ? $attributes->focalpoint_x : null;
+        $pointY      = $attributes->focalpoint_y ? $attributes->focalpoint_y : null;
+
+        if ($pointX !== null && $pointY !== null)
+        {
+            list($pointX, $pointY) = $this->_calcPoint(
+                $attributes->width,
+                $attributes->height,
+                $fi->width,
+                $fi->height,
+                $pointX,
+                $pointY,
+                'down'
             );
-
-            $fi = new \Brainbits_Filter_Input($filters, $validators, $this->_getAllParams());
-
-            if (!$fi->isValid())
-            {
-                throw new \Brainbits_Filter_Exception('Error occured', 0, $fi);
-            }
-            // end: input validation
-            // ------------------------------
-
-            $site  = $this->getContainer()->mediaSiteManager;
-            $file  = $site->getByFileId($fi->file_id)->getFilePeer()->getById($fi->file_id);
-            $asset = $file->getAsset();
-
-            $attributes = $asset->getAttributes();
-
-            $pointActive = (int)$attributes->focalpoint_active;
-            $pointX      = $attributes->focalpoint_x ? $attributes->focalpoint_x : null;
-            $pointY      = $attributes->focalpoint_y ? $attributes->focalpoint_y : null;
-
-            if ($pointX !== null && $pointY !== null)
-            {
-                list($pointX, $pointY) = $this->_calcPoint(
-                    $attributes->width,
-                    $attributes->height,
-                    $fi->width,
-                    $fi->height,
-                    $pointX,
-                    $pointY,
-                    'down'
-                );
-            }
-
-            $data = array(
-                'focalpoint_active' => $pointActive,
-                'focalpoint_x'      => $pointX,
-                'focalpoint_y'      => $pointY,
-            );
-
-            $result = \MWF_Ext_Result::encode(true, $this->_hasParam('id') ? $this->_getParam('id') : null, null, $data);
-        }
-        catch (\Brainbits_Filter_Exception $e)
-        {
-            $result = \MWF_Ext_Result::encode(false, $this->_hasParam('id') ? $this->_getParam('id') : null, $e->getFilterMessagesAsString());
-        }
-        catch (\Exception $e)
-        {
-            $result = \MWF_Ext_Result::encode(false, $this->_hasParam('id') ? $this->_getParam('id') : null, $e->getMessage());
         }
 
-        $this->_response->setAjaxPayload($result);
+        $data = array(
+            'focalpoint_active' => $pointActive,
+            'focalpoint_x'      => $pointX,
+            'focalpoint_y'      => $pointY,
+        );
+
+        $this->_response->setResult(true, $this->hasParam('id') ? $this->getParam('id') : null, null, $data);
     }
 
     public function setAction()
     {
-        try
-        {
-            // ------------------------------
-            // start: input validation
-            $filters = array("StripTags", "StringTrim");
+        // ------------------------------
+        // start: input validation
+        $filters = array("StripTags", "StringTrim");
 
-            $validators = array(
-                'file_id' => array(
-                    new \Brainbits_Validate_Uuid(),
-                    'presence' => 'required'
-                ),
-                'file_version' => array(
-                    'Digits',
-                    'presence' => 'required'
-                ),
-                'point_active' => array(
-                    'presence' => 'required',
-                    'allowEmpty' => true,
-                    'default' => 0
-                ),
-                'point_x' => array(
-                    'presence' => 'required',
-                    'allowEmpty' => true,
-                    'default' => 0
-                ),
-                'point_y' => array(
-                    'presence' => 'required',
-                    'allowEmpty' => true,
-                    'default' => 0
-                ),
-                'width' => array(
-                    'presence' => 'required',
-                ),
-                'height' => array(
-                    'presence' => 'required',
-                ),
+        $validators = array(
+            'file_id' => array(
+                new \Brainbits_Validate_Uuid(),
+                'presence' => 'required'
+            ),
+            'file_version' => array(
+                'Digits',
+                'presence' => 'required'
+            ),
+            'point_active' => array(
+                'presence' => 'required',
+                'allowEmpty' => true,
+                'default' => 0
+            ),
+            'point_x' => array(
+                'presence' => 'required',
+                'allowEmpty' => true,
+                'default' => 0
+            ),
+            'point_y' => array(
+                'presence' => 'required',
+                'allowEmpty' => true,
+                'default' => 0
+            ),
+            'width' => array(
+                'presence' => 'required',
+            ),
+            'height' => array(
+                'presence' => 'required',
+            ),
+        );
+
+        $fi = new \Brainbits_Filter_Input($filters, $validators, $this->_getAllParams());
+
+        if (!$fi->isValid())
+        {
+            throw new \Brainbits_Filter_Exception('Error occured', 0, $fi);
+        }
+        // end: input validation
+        // ------------------------------
+
+        $site = $this->getContainer()->mediaSiteManager;
+        $file = $site->getByFileId($fi->file_id)->getFilePeer()->getById($fi->file_id);
+        $asset = $file->getAsset();
+
+        $attributes = $asset->getAttributes();
+
+        $pointActive = (int)$fi->point_active;
+        $pointX      = $fi->point_x !== null ? round($fi->point_x) : null;
+        $pointY      = $fi->point_y !== null ? round($fi->point_y) : null;
+
+        if ($pointX !== null && $pointY !== null)
+        {
+            list($pointX, $pointY) = $this->_calcPoint(
+                $attributes->width,
+                $attributes->height,
+                $fi->width,
+                $fi->height,
+                $pointX,
+                $pointY,
+                'up'
             );
-
-            $fi = new \Brainbits_Filter_Input($filters, $validators, $this->_getAllParams());
-
-            if (!$fi->isValid())
-            {
-                throw new \Brainbits_Filter_Exception('Error occured', 0, $fi);
-            }
-            // end: input validation
-            // ------------------------------
-
-            $site = $this->getContainer()->mediaSiteManager;
-            $file = $site->getByFileId($fi->file_id)->getFilePeer()->getById($fi->file_id);
-            $asset = $file->getAsset();
-
-            $attributes = $asset->getAttributes();
-
-            $pointActive = (int)$fi->point_active;
-            $pointX      = $fi->point_x !== null ? round($fi->point_x) : null;
-            $pointY      = $fi->point_y !== null ? round($fi->point_y) : null;
-
-            if ($pointX !== null && $pointY !== null)
-            {
-                list($pointX, $pointY) = $this->_calcPoint(
-                    $attributes->width,
-                    $attributes->height,
-                    $fi->width,
-                    $fi->height,
-                    $pointX,
-                    $pointY,
-                    'up'
-                );
-            }
-
-            $attributes->focalpoint_active = $pointActive;
-            $attributes->focalpoint_x      = $pointX;
-            $attributes->focalpoint_y      = $pointY;
-
-            $asset->storeAttributes($attributes);
-
-            $cropTemplates = $this->_getCropTemplates();
-            $templateKeys = array();
-            foreach ($cropTemplates as $cropTemplate)
-            {
-                $templateKeys[] = $cropTemplate->key;
-            }
-
-            $batch = new \Phlexible\MediaCacheComponent\Queue\Batch();
-            $batch
-                ->file($file)
-                ->templates($templateKeys);
-            $batchQueuer = $this->getContainer()->mediaCacheBatchQueuer;
-            $cnt = $batchQueuer->add($batch);
-
-            $result = \MWF_Ext_Result::encode(true, $this->_hasParam('id') ? $this->_getParam('id') : null, 'Focal point saved.');
         }
-        catch (\Brainbits_Filter_Exception $e)
+
+        $attributes->focalpoint_active = $pointActive;
+        $attributes->focalpoint_x      = $pointX;
+        $attributes->focalpoint_y      = $pointY;
+
+        $asset->storeAttributes($attributes);
+
+        $cropTemplates = $this->_getCropTemplates();
+        $templateKeys = array();
+        foreach ($cropTemplates as $cropTemplate)
         {
-            $result = \MWF_Ext_Result::encode(false, $this->_hasParam('id') ? $this->_getParam('id') : null, $e->getFilterMessagesAsString());
+            $templateKeys[] = $cropTemplate->key;
         }
-        catch (\Exception $e)
-        {
-            $result = \MWF_Ext_Result::encode(false, $this->_hasParam('id') ? $this->_getParam('id') : null, $e->getMessage());
-        }
+
+        $batch = new \Phlexible\MediaCacheComponent\Queue\Batch();
+        $batch
+            ->file($file)
+            ->templates($templateKeys);
+        $batchQueuer = $this->getContainer()->mediaCacheBatchQueuer;
+        $cnt = $batchQueuer->add($batch);
+
+        $this->_response->setResult(true, $this->_hasParam('id') ? $this->_getParam('id') : null, 'Focal point saved.');
 
         $this->_response->setAjaxPayload($result);
     }
