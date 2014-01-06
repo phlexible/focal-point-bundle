@@ -2,7 +2,7 @@ Ext.ns('Media.focalpoint');
 
 Media.manager.FileDetailWindow.prototype.populateTabs =
     Media.manager.FileDetailWindow.prototype.populateTabs.createSequence(function() {
-        if (Makeweb.config.user.Resources.indexOf('focalpoint') === -1) {
+        if (Makeweb.User.isGranted('focalpoint')) {
             return;
         }
 
