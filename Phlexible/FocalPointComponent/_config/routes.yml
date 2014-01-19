@@ -1,0 +1,4 @@
+focalpoint_data:
+    path: '/focalpoint/data/:action/*'
+    defaults: { module: focalpoint, controller: data, action: index }
+    requirements: { _resource: focalpoint }

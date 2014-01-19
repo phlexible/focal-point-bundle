@@ -25,7 +25,6 @@ class FocalPointComponent extends AbstractComponent
         $this
             ->setVersion('0.7.1')
             ->setId('focalpoint')
-            ->setFile(__FILE__)
             ->setPackage('phlexible');
     }
 
@@ -41,17 +40,6 @@ class FocalPointComponent extends AbstractComponent
                 'allow' => array(
                 )
             )
-        );
-    }
-
-    public function getRoutes()
-    {
-        return array(
-            'focalpoint_data' => new Route(
-                '/focalpoint/data/:action/*',
-                array('module' => 'focalpoint', 'controller' => 'data', 'action' => 'index'),
-                array('_resource' => self::RESOURE_FOCAL_POINT)
-            ),
         );
     }
 }
