@@ -3,7 +3,7 @@
     "description": "phlexible.media focal point component",
     "license": "proprietary",
     "autoload": {
-        "psr-0": { 
+        "psr-4": { 
             "Phlexible\\FocalPointComponent\\": ""
         }
     },
