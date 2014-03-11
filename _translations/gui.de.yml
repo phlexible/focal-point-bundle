@@ -1,16 +1,11 @@
-Phlexible:
-    strings:
-        focalpoint:
-            component:
-                name: Fokuspunkt
-                description: Fokuspunkt
-                
-            focal_point: Fokuspunkt
-            no_focal_point: Zentrierter Fokuspunkt
-            use_focal_point: Individueller Fokuspunkt
-            never_crop: Bild niemals beschneiden
-            image_templates: Bildvorlagen
-            safe_area: Sicherer Bereich
-            title: Titel
-            save: Speichern
-        
+focalpoint:
+    component_description: Fokuspunkt
+    component_name: Fokuspunkt
+    focal_point: Fokuspunkt
+    no_focal_point: 'Zentrierter Fokuspunkt'
+    use_focal_point: 'Individueller Fokuspunkt'
+    never_crop: 'Bild niemals beschneiden'
+    image_templates: Bildvorlagen
+    safe_area: 'Sicherer Bereich'
+    title: Titel
+    save: Speichern

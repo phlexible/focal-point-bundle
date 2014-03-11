@@ -1,23 +1,23 @@
-Ext.ns('Media.focalpoint');
+Ext.ns('Phlexible.focalpoint');
 
-Media.manager.FileDetailWindow.prototype.populateTabs =
-    Media.manager.FileDetailWindow.prototype.populateTabs.createSequence(function() {
-        if (Makeweb.User.isGranted('focalpoint')) {
+Phlexible.mediamanager.FileDetailWindow.prototype.populateTabs =
+    Phlexible.mediamanager.FileDetailWindow.prototype.populateTabs.createSequence(function() {
+        if (Phlexible.User.isGranted('focalpoint')) {
             return;
         }
 
         this.tabs.push({
             xtype: 'focalpoint-mainpanel',
-            disabled: this.asset_type != Media.manager.IMAGE
+            disabled: this.asset_type != Phlexible.mediamanager.IMAGE
         });
     });
 
-Media.manager.FileDetailWindow.prototype.load =
-    Media.manager.FileDetailWindow.prototype.load.createSequence(function() {
+Phlexible.mediamanager.FileDetailWindow.prototype.load =
+    Phlexible.mediamanager.FileDetailWindow.prototype.load.createSequence(function() {
         var foundItem = null;
 
         this.getComponent(1).items.each(function(item) {
-            if (item.title === Media.strings.Focalpoint.focal_point) {
+            if (item.title === Phlexible.focalpoint.Strings.focal_point) {
                 foundItem = item;
                 return false;
             }
@@ -27,7 +27,7 @@ Media.manager.FileDetailWindow.prototype.load =
             return;
         }
 
-        if (this.asset_type != Media.manager.IMAGE) {
+        if (this.asset_type != Phlexible.mediamanager.IMAGE) {
             foundItem.disable();
             //foundItem.getComponent(1).clear();
         }

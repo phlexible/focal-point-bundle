@@ -1,6 +1,6 @@
-Media.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
-    title: Media.strings.Focalpoint.focal_point,
-    strings: Media.strings.Focalpoint,
+Phlexible.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
+    title: Phlexible.focalpoint.Strings.focal_point,
+    strings: Phlexible.focalpoint.Strings,
     bodyStyle: 'width: 400px; height: 400px;',
     hideMode: 'offsets',
 
@@ -79,7 +79,7 @@ Media.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
             scope: this
         }];
 
-        Media.focalpoint.FocalpointPanel.superclass.initComponent.call(this);
+        Phlexible.focalpoint.FocalpointPanel.superclass.initComponent.call(this);
 
         this.on({
             render: {
@@ -90,7 +90,7 @@ Media.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
     },
 
     initTracker: function() {
-        MWF.console.log('initTracker');
+        Phlexible.console.log('initTracker');
 
         this.innerEl = this.body.createChild({
             cls: 'fp-inner',
@@ -141,13 +141,13 @@ Media.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
     },
 
     getImageUrl: function(file_id, file_version) {
-        return MWF.baseUrl + '/focalpoint/data/image?file_id=' + this.file_id + '&file_version=' + this.file_version + '&dc=' + (new Date().getTime());
+        return Phlexible.baseUrl + '/focalpoint/data/image?file_id=' + this.file_id + '&file_version=' + this.file_version + '&dc=' + (new Date().getTime());
     },
 
     loadFile: function(file_id, file_version) {
         this.loading = true;
 
-        MWF.console.log('loadFile('+file_id+','+file_version+')');
+        Phlexible.console.log('loadFile('+file_id+','+file_version+')');
         if (file_id == this.file_id && file_version == this.file_version) {
             return;
         }
@@ -170,12 +170,12 @@ Media.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
     },
 
     setImage: function(image) {
-        MWF.console.log('setImage('+image+')');
+        Phlexible.console.log('setImage('+image+')');
         this.imageEl.dom.src = image;
     },
 
     updateImageSize: function() {
-        MWF.console.log('updateImageSize(' + this.imageEl.dom.width + ',' + this.imageEl.dom.height + ')');
+        Phlexible.console.log('updateImageSize(' + this.imageEl.dom.width + ',' + this.imageEl.dom.height + ')');
 
         this.setImageSize(this.imageEl.dom.width, this.imageEl.dom.height);
 
@@ -185,7 +185,7 @@ Media.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
     },
 
     setImageSize: function(width, height) {
-        MWF.console.log('setImageSize('+width+','+height+')');
+        Phlexible.console.log('setImageSize('+width+','+height+')');
 
         this.imageWidth = width;
         this.imageHeight = height;
@@ -238,7 +238,7 @@ Media.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
         this.boundaryHeight = smallestHeight;
         this.boundaryMode = 'both';
 
-        MWF.console.log('boundary: '+this.boundaryWidth+','+this.boundaryHeight);
+        Phlexible.console.log('boundary: '+this.boundaryWidth+','+this.boundaryHeight);
         this.boundaryEl.setWidth(this.boundaryWidth);
         this.boundaryEl.setHeight(this.boundaryHeight);
 
@@ -318,7 +318,7 @@ Media.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
             this.setBoundaryLeftTop(0, 0);
         }
 
-        MWF.console.log('boundary: '+this.boundaryWidth+','+this.boundaryHeight);
+        Phlexible.console.log('boundary: '+this.boundaryWidth+','+this.boundaryHeight);
         this.boundaryEl.setWidth(this.boundaryWidth);
         this.boundaryEl.setHeight(this.boundaryHeight);
     },
@@ -380,7 +380,7 @@ Media.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
 
     loadPoint: function(e) {
         Ext.Ajax.request({
-            url: MWF.baseUrl + '/focalpoint/data/get',
+            url: Phlexible.baseUrl + '/focalpoint/data/get',
             params: {
                 file_id: this.file_id,
                 file_version: this.file_version,
@@ -395,10 +395,10 @@ Media.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
                     this.pointX = data.data.focalpoint_x;
                     this.pointY = data.data.focalpoint_y;
 
-                    MWF.console.log('LOAD');
-                    MWF.console.log('pointActive: ' + this.pointActive);
-                    MWF.console.log('pointX: ' + this.pointX);
-                    MWF.console.log('pointY: ' + this.pointY);
+                    Phlexible.console.log('LOAD');
+                    Phlexible.console.log('pointActive: ' + this.pointActive);
+                    Phlexible.console.log('pointX: ' + this.pointX);
+                    Phlexible.console.log('pointY: ' + this.pointY);
 
                     if (!this.pointActive || (this.pointX === null && this.pointY === null)) {
                         this.setPointLeftTop(this.imageWidth / 2, this.imageHeight / 2);
@@ -429,13 +429,13 @@ Media.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
     },
 
     savePoint: function(e) {
-        MWF.console.log('SAVE');
-        MWF.console.log('pointActive: ' + this.pointActive);
-        MWF.console.log('pointX: ' + this.pointX);
-        MWF.console.log('pointY: ' + this.pointY);
+        Phlexible.console.log('SAVE');
+        Phlexible.console.log('pointActive: ' + this.pointActive);
+        Phlexible.console.log('pointX: ' + this.pointX);
+        Phlexible.console.log('pointY: ' + this.pointY);
 
         Ext.Ajax.request({
-            url: MWF.baseUrl + '/focalpoint/data/set',
+            url: Phlexible.baseUrl + '/focalpoint/data/set',
             params: {
                 file_id: this.file_id,
                 file_version: this.file_version,
@@ -449,7 +449,7 @@ Media.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
                 var data = Ext.decode(response.responseText);
 
                 if (data.success) {
-                    MWF.success(data.msg);
+                    Phlexible.success(data.msg);
                 }
                 else {
                     Ext.MessageBox.alert('Failure', data.msg);
@@ -460,4 +460,4 @@ Media.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
     }
 });
 
-Ext.reg('focalpoint-focalpointpanel', Media.focalpoint.FocalpointPanel);
+Ext.reg('focalpoint-focalpointpanel', Phlexible.focalpoint.FocalpointPanel);

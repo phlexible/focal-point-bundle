@@ -1,6 +1,6 @@
-Media.focalpoint.MainPanel = Ext.extend(Ext.Panel, {
-    title: Media.strings.Focalpoint.focal_point,
-    strings: Media.strings.Focalpoint,
+Phlexible.focalpoint.MainPanel = Ext.extend(Ext.Panel, {
+    title: Phlexible.focalpoint.Strings.focal_point,
+    strings: Phlexible.focalpoint.Strings,
     iconCls: 'm-focalpoint-focalpoint-icon',
     layout: 'border',
     hideMode: 'offsets',
@@ -10,7 +10,7 @@ Media.focalpoint.MainPanel = Ext.extend(Ext.Panel, {
             xtype: 'grid',
             region: 'east',
             width: 180,
-            title: Media.strings.Focalpoint.image_templates,
+            title: Phlexible.focalpoint.Strings.image_templates,
             collapsible: true,
             disabled: true,
             viewConfig: {
@@ -19,7 +19,7 @@ Media.focalpoint.MainPanel = Ext.extend(Ext.Panel, {
                 forceFit: true
             },
             store: new Ext.data.JsonStore({
-                url: MWF.baseUrl + '/focalpoint/data/templates',
+                url: Phlexible.baseUrl + '/focalpoint/data/templates',
                 fields: ['id', 'title', 'type', 'width', 'height'],
                 root: 'templates',
                 id: 'id',
@@ -30,10 +30,10 @@ Media.focalpoint.MainPanel = Ext.extend(Ext.Panel, {
                 header: this.strings.title,
                 renderer: function(v, md, r) {
                     if (r.data.type == 'safe') {
-                        v = MWF.inlineIcon('m-focalpoint-safe-icon') + ' ' + v;
+                        v = Phlexible.inlineIcon('m-focalpoint-safe-icon') + ' ' + v;
                     }
                     else {
-                        v = MWF.inlineIcon('m-mediatemplates-type_' + r.data.type + '-icon') + ' ' + v;
+                        v = Phlexible.inlineIcon('m-mediatemplates-type_' + r.data.type + '-icon') + ' ' + v;
                     }
 
                     return v;
@@ -86,9 +86,9 @@ Media.focalpoint.MainPanel = Ext.extend(Ext.Panel, {
             }
         }];
 
-        Media.focalpoint.MainPanel.superclass.initComponent.call(this);
+        Phlexible.focalpoint.MainPanel.superclass.initComponent.call(this);
     }
 });
 
 
-Ext.reg('focalpoint-mainpanel', Media.focalpoint.MainPanel);
+Ext.reg('focalpoint-mainpanel', Phlexible.focalpoint.MainPanel);

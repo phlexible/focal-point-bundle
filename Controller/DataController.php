@@ -9,66 +9,41 @@
 namespace Phlexible\FocalPointComponent\Controller;
 
 use Phlexible\CoreComponent\Controller\Action\Action;
-use Phlexible\MediaTemplatesComponent\ImageTemplate;
+use Phlexible\MediaTemplatesComponent\Template\ImageTemplate;
 
 /**
  * Data controller
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */
-class Focalpoint_DataController extends Action
+class DataController extends Action
 {
+    /**
+     * Get action
+     */
     public function getAction()
     {
-        // ------------------------------
-        // start: input validation
-        $filters = array("StripTags", "StringTrim");
+        $fileId = $this->getParam('file_id');
+        $fileVersion = $this->getParam('file_version');
+        $width = $this->getParam('width');
+        $height = $this->getParam('height');
 
-        $validators = array(
-            'file_id' => array(
-                new \Brainbits_Validate_Uuid(),
-                'presence' => 'required'
-            ),
-            'file_version' => array(
-                'Digits',
-                'presence' => 'required'
-            ),
-            'width' => array(
-                'Digits',
-                'presence' => 'required',
-            ),
-            'height' => array(
-                'Digits',
-                'presence' => 'required',
-            ),
-        );
+        $site  = $this->getContainer()->mediaSiteManager->getByFileId($fileId);
+        $file  = $site->findFile($fileId, $fileVersion);
 
-        $fi = new \Brainbits_Filter_Input($filters, $validators, $this->_getAllParams());
+        $pointActive = (int) $file->getAttribute('focalpoint.enabled', false);
+        $pointX      = (int) $file->getAttribute('focalpoint.x', null);
+        $pointY      = (int) $file->getAttribute('focalpoint.y', null);
 
-        if (!$fi->isValid())
-        {
-            throw new \Brainbits_Filter_Exception('Error occured', 0, $fi);
-        }
-        // end: input validation
-        // ------------------------------
+        if ($pointX !== null && $pointY !== null) {
+            $imageAnalyzer = $this->getContainer()->mediaToolsImageAnalyzer;
+            $info = $imageAnalyzer->analyze($file->getPhysicalPath());
 
-        $site  = $this->getContainer()->mediaSiteManager;
-        $file  = $site->getByFileId($fi->file_id)->getFilePeer()->getById($fi->file_id);
-        $asset = $file->getAsset();
-
-        $attributes = $asset->getAttributes();
-
-        $pointActive = (int)$attributes->focalpoint_active;
-        $pointX      = $attributes->focalpoint_x ? $attributes->focalpoint_x : null;
-        $pointY      = $attributes->focalpoint_y ? $attributes->focalpoint_y : null;
-
-        if ($pointX !== null && $pointY !== null)
-        {
             list($pointX, $pointY) = $this->_calcPoint(
-                $attributes->width,
-                $attributes->height,
-                $fi->width,
-                $fi->height,
+                $info->getWidth(),
+                $info->getHeight(),
+                $width,
+                $height,
                 $pointX,
                 $pointY,
                 'down'
@@ -84,87 +59,49 @@ class Focalpoint_DataController extends Action
         $this->_response->setResult(true, $this->hasParam('id') ? $this->getParam('id') : null, null, $data);
     }
 
+    /**
+     * Set action
+     */
     public function setAction()
     {
-        // ------------------------------
-        // start: input validation
-        $filters = array("StripTags", "StringTrim");
+        $fileId = $this->getParam('file_id');
+        $fileVersion = $this->getParam('file_version');
+        $pointActive = (boolean) $this->getParam('point_active');
+        $pointX = $this->getParam('point_x');
+        $pointY = $this->getParam('point_y');
+        $width = $this->getParam('width');
+        $height = $this->getParam('height');
 
-        $validators = array(
-            'file_id' => array(
-                new \Brainbits_Validate_Uuid(),
-                'presence' => 'required'
-            ),
-            'file_version' => array(
-                'Digits',
-                'presence' => 'required'
-            ),
-            'point_active' => array(
-                'presence' => 'required',
-                'allowEmpty' => true,
-                'default' => 0
-            ),
-            'point_x' => array(
-                'presence' => 'required',
-                'allowEmpty' => true,
-                'default' => 0
-            ),
-            'point_y' => array(
-                'presence' => 'required',
-                'allowEmpty' => true,
-                'default' => 0
-            ),
-            'width' => array(
-                'presence' => 'required',
-            ),
-            'height' => array(
-                'presence' => 'required',
-            ),
-        );
+        $site = $this->getContainer()->mediaSiteManager->getByFileId($fileId);
+        $file = $site->findFile($fileId, $fileVersion);
 
-        $fi = new \Brainbits_Filter_Input($filters, $validators, $this->_getAllParams());
+        $pointX = $pointX !== null ? round($pointX) : null;
+        $pointY = $pointY !== null ? round($pointY) : null;
 
-        if (!$fi->isValid())
-        {
-            throw new \Brainbits_Filter_Exception('Error occured', 0, $fi);
-        }
-        // end: input validation
-        // ------------------------------
+        if ($pointX !== null && $pointY !== null) {
+            $imageAnalyzer = $this->getContainer()->mediaToolsImageAnalyzer;
+            $info = $imageAnalyzer->analyze($file->getPhysicalPath());
 
-        $site = $this->getContainer()->mediaSiteManager;
-        $file = $site->getByFileId($fi->file_id)->getFilePeer()->getById($fi->file_id);
-        $asset = $file->getAsset();
-
-        $attributes = $asset->getAttributes();
-
-        $pointActive = (int)$fi->point_active;
-        $pointX      = $fi->point_x !== null ? round($fi->point_x) : null;
-        $pointY      = $fi->point_y !== null ? round($fi->point_y) : null;
-
-        if ($pointX !== null && $pointY !== null)
-        {
             list($pointX, $pointY) = $this->_calcPoint(
-                $attributes->width,
-                $attributes->height,
-                $fi->width,
-                $fi->height,
+                $info->getWidth(),
+                $info->getHeight(),
+                $width,
+                $height,
                 $pointX,
                 $pointY,
                 'up'
             );
         }
 
-        $attributes->focalpoint_active = $pointActive;
-        $attributes->focalpoint_x      = $pointX;
-        $attributes->focalpoint_y      = $pointY;
+        $file->setAttribute('focalpoint.active', $pointActive);
+        $file->setAttribute('focalpoint.x', $pointX);
 
-        $asset->storeAttributes($attributes);
+        $file->setAttribute('focalpoint.y', $pointY);
 
-        $cropTemplates = $this->_getCropTemplates();
+        $cropTemplates = $this->getCropTemplates();
         $templateKeys = array();
-        foreach ($cropTemplates as $cropTemplate)
-        {
-            $templateKeys[] = $cropTemplate->key;
+        foreach ($cropTemplates as $cropTemplate) {
+            $templateKeys[] = $cropTemplate->getKey();
         }
 
         $batch = new \Phlexible\MediaCacheComponent\Queue\Batch();
@@ -174,130 +111,107 @@ class Focalpoint_DataController extends Action
         $batchQueuer = $this->getContainer()->mediaCacheBatchQueuer;
         $cnt = $batchQueuer->add($batch);
 
-        $this->_response->setResult(true, $this->_hasParam('id') ? $this->_getParam('id') : null, 'Focal point saved.');
-
-        $this->_response->setAjaxPayload($result);
+        $this->_response->setResult(true, $this->hasParam('id') ? $this->getParam('id') : null, 'Focal point saved.');
     }
 
+    /**
+     * @param integer $imageWidth
+     * @param integer $imageHeight
+     * @param integer $tempWidth
+     * @param integer $tempHeight
+     * @param integer $pointX
+     * @param integer $pointY
+     * @param string  $mode
+     *
+     * @throws \Exception
+     * @return array
+     */
     protected function _calcPoint($imageWidth, $imageHeight, $tempWidth, $tempHeight, $pointX, $pointY, $mode)
     {
-        #echo 'image: '.$attributes->width." ".$attributes->height."<br>";
-        #echo 'point: '.$pointX." ".$pointY."<br>";
+        //echo 'image: '.$attributes->width." ".$attributes->height."<br>";
+        //echo 'point: '.$pointX." ".$pointY."<br>";
 
-        if ($tempWidth < $imageWidth && $tempHeight < $imageHeight)
-        {
-            if ($tempWidth == 400)
-            {
+        if ($tempWidth < $imageWidth && $tempHeight < $imageHeight) {
+            $ratio = 1;
+            if ($tempWidth == 400) {
                 $ratio = $imageWidth / 400;
-            }
-            elseif ($tempHeight == 400)
-            {
+            } elseif ($tempHeight == 400) {
                 $ratio = $imageHeight / 400;
             }
 
-            if ($mode === 'up')
-            {
+            if ($mode === 'up') {
                 $pointX = round($pointX * $ratio);
                 $pointY = round($pointY * $ratio);
-            }
-            elseif ($mode === 'down')
-            {
+            } elseif ($mode === 'down') {
                 $pointX = round($pointX / $ratio);
                 $pointY = round($pointY / $ratio);
-            }
-            else
-            {
-                die('unknown mode');
+            } else {
+                throw new \Exception("unknown mode $mode");
             }
 
-            #echo 'ratio: '.$ratio."<br>";
-            #echo 'calulated: ' . $pointX." ".$pointY;
+            //echo 'ratio: '.$ratio."<br>";
+            //echo 'calulated: ' . $pointX." ".$pointY;
         }
 
-        if ($pointX < 0)
-        {
+        if ($pointX < 0) {
             $pointX = 0;
-        }
-        elseif ($pointX > $imageWidth)
-        {
+        } elseif ($pointX > $imageWidth) {
             $pointX = $imageWidth;
         }
 
-        if ($pointY < 0)
-        {
+        if ($pointY < 0) {
             $pointY = 0;
-        }
-        elseif ($pointY > $imageHeight)
-        {
+        } elseif ($pointY > $imageHeight) {
             $pointY = $imageHeight;
         }
 
         return array($pointX, $pointY);
     }
 
+    /**
+     * Image action
+     */
     public function imageAction()
     {
-        try
-        {
-            // ------------------------------
-            // start: input validation
-            $filters = array("StripTags", "StringTrim");
+        $fileId = $this->getParam('file_id');
+        $fileVersion = $this->getParam('file_version');
 
-            $validators = array(
-                'file_id' => array(
-                    new \Brainbits_Validate_Uuid(),
-                    'presence' => 'required'
-                ),
-                'file_version' => array(
-                    'Digits',
-                    'presence' => 'required'
-                ),
-            );
-
-            $fi = new \Brainbits_Filter_Input($filters, $validators, $this->getAllParams());
-
-            if (!$fi->isValid())
-            {
-                throw new \Brainbits_Filter_Exception('Error occured', 0, $fi);
-            }
-            // end: input validation
-            // ------------------------------
-
-            $site  = $this->getContainer()->mediaSiteManager;
-            $file  = $site->getByFileId($fi->file_id)->getFilePeer()->getById($fi->file_id);
-            $filePath = $file->getFilePath();
+        try {
+            $site  = $this->getContainer()->mediaSiteManager->getByFileId($fileId);
+            $file  = $site->findFile($fileId);
+            $filePath = $file->getPhysicalPath();
 
             $template = new ImageTemplate();
             $template->setParameter('width', 400);
             $template->setParameter('height', 400);
             $template->setParameter('method', 'fit');
-            $template->setParameter('scale', \Brainbits_Toolkit_Image_Imagemagick::SCALE_DOWN);
+            $template->setParameter('scale', 'down');
 
             $toolkit = $template->getAppliedToolkit($filePath);
             $toolkit->setFormat('jpg');
 
             $tempDir = $this->getContainer()->getParameter(':app.temp_dir');
-            $filename = $toolkit->save($tempDir . $fi->file_id . '_' . $fi->file_version, true);
+            $filename = $toolkit->save($tempDir . $fileId . '_' . $fileVersion, true);
 
             $this->_response
                 ->setContentType('image/jpg')
                 ->setFile($filename);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->_response
                 ->setHttpResponseCode(500)
                 ->setBody($e->getMessage());
         }
     }
 
+    /**
+     * Templates action
+     */
     public function templatesAction()
     {
-        $cropTemplates = $this->_getCropTemplates();
+        $cropTemplates = $this->getCropTemplates();
 
         $data = array();
-        foreach ($cropTemplates as $cropTemplate)
-        {
+        foreach ($cropTemplates as $cropTemplate) {
             $data[$cropTemplate->getKey() . '___' . $cropTemplate->getId()] = array(
                 'id'     => $cropTemplate->getId(),
                 'type'   => 'image',
@@ -326,26 +240,16 @@ class Focalpoint_DataController extends Action
         $this->_response->setAjaxPayload(array('templates' => $data));
     }
 
-    protected function _getCropTemplates()
+    /**
+     * @return ImageTemplate[]
+     */
+    private function getCropTemplates()
     {
-        $templates = $this->getContainer()->mediatemplatesRepository->findAll();
-
-        $cropTemplates = array();
-        foreach ($templates as $template)
-        {
-            if (!$template instanceof ImageTemplate)
-            {
-                continue;
+        return array_filter(
+            $this->getContainer()->mediatemplatesRepository->findAll(),
+            function($template) {
+                return $template instanceof ImageTemplate && $template->getMethod() === 'crop';
             }
-
-            if ($template->getMethod() !== \Brainbits_Toolkit_Image_Interface::RESIZE_METHOD_CROP)
-            {
-                continue;
-            }
-
-            $cropTemplates[] = $template;
-        }
-
-        return $cropTemplates;
+        );
     }
 }
