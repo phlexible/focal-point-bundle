@@ -8,7 +8,7 @@
 
 namespace Phlexible\FocalPointComponent;
 
-use Phlexible\Component\AbstractComponent;
+use Phlexible\Component\Component;
 use Zend_Controller_Router_Route as Route;
 
 /**
@@ -16,7 +16,7 @@ use Zend_Controller_Router_Route as Route;
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */
-class FocalPointComponent extends AbstractComponent
+class FocalPointComponent extends Component
 {
     const RESOURE_FOCAL_POINT = 'focalpoint';
 
