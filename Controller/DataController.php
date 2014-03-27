@@ -108,7 +108,7 @@ class DataController extends Action
         $batch
             ->file($file)
             ->templates($templateKeys);
-        $batchQueuer = $this->getContainer()->mediaCacheBatchQueuer;
+        $batchQueuer = $this->getContainer()->mediacacheBatchQueuer;
         $cnt = $batchQueuer->add($batch);
 
         $this->_response->setResult(true, $this->hasParam('id') ? $this->getParam('id') : null, 'Focal point saved.');

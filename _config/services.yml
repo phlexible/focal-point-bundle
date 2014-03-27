@@ -1,6 +1,3 @@
-tags:
-    - ["asset.translation", {namespace: "Media.strings.Focalpoint", page: focalpoint}]
-
 services:
     # assets
     focalpointAssetScripts:
@@ -14,3 +11,9 @@ services:
         arguments: ["%focalpoint.asset.css_path%"]
         tags:
             - ["asset.css"]
+
+    # acl resources
+    focalpointResourceFocalpoint:
+        class: Zend_Acl_Resource
+        arguments: [focalpoint]
+        tags: [[security.acl.resource]]

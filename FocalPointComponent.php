@@ -9,7 +9,6 @@
 namespace Phlexible\FocalPointComponent;
 
 use Phlexible\Component\Component;
-use Zend_Controller_Router_Route as Route;
 
 /**
  * Focal point component
@@ -26,20 +25,5 @@ class FocalPointComponent extends Component
             ->setVersion('0.7.1')
             ->setId('focalpoint')
             ->setPackage('phlexible');
-    }
-
-    public function getAcl()
-    {
-        return array(
-            array(
-                'roles' => array(
-                ),
-                'resources' => array(
-                    self::RESOURE_FOCAL_POINT,
-                ),
-                'allow' => array(
-                )
-            )
-        );
     }
 }

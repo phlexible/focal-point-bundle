@@ -1,6 +1,4 @@
 focalpoint:
-    component_description: 'Focal point'
-    component_name: 'Focal point'
     focal_point: 'Focal point'
     no_focal_point: 'Centered focal point'
     use_focal_point: 'Individual focal point'
