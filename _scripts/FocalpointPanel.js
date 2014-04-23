@@ -141,7 +141,7 @@ Phlexible.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
     },
 
     getImageUrl: function(file_id, file_version) {
-        return Phlexible.baseUrl + '/focalpoint/data/image?file_id=' + this.file_id + '&file_version=' + this.file_version + '&dc=' + (new Date().getTime());
+        return Phlexible.Router.generate('focalpoint_image', {file_id: this.file_id, file_version: this.file_version, dc: new Date().getTime()});
     },
 
     loadFile: function(file_id, file_version) {
@@ -380,7 +380,7 @@ Phlexible.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
 
     loadPoint: function(e) {
         Ext.Ajax.request({
-            url: Phlexible.baseUrl + '/focalpoint/data/get',
+            url: Phlexible.Router.generate('focalpoint_get'),
             params: {
                 file_id: this.file_id,
                 file_version: this.file_version,
@@ -435,7 +435,7 @@ Phlexible.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
         Phlexible.console.log('pointY: ' + this.pointY);
 
         Ext.Ajax.request({
-            url: Phlexible.baseUrl + '/focalpoint/data/set',
+            url: Phlexible.Router.generate('focalpoint_set'),
             params: {
                 file_id: this.file_id,
                 file_version: this.file_version,

@@ -19,7 +19,7 @@ Phlexible.focalpoint.MainPanel = Ext.extend(Ext.Panel, {
                 forceFit: true
             },
             store: new Ext.data.JsonStore({
-                url: Phlexible.baseUrl + '/focalpoint/data/templates',
+                url: Phlexible.Router.generate('focalpoint_templates'),
                 fields: ['id', 'title', 'type', 'width', 'height'],
                 root: 'templates',
                 id: 'id',
