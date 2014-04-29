@@ -27,7 +27,7 @@ Phlexible.mediamanager.FileDetailWindow.prototype.load =
             return;
         }
 
-        if (this.asset_type != Phlexible.mediamanager.IMAGE) {
+        if (this.asset_type.toLowerCase() != Phlexible.mediamanager.IMAGE.toLowerCase()) {
             foundItem.disable();
             //foundItem.getComponent(1).clear();
         }

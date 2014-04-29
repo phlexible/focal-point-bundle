@@ -31,9 +31,10 @@ class DataController extends Action
         $site  = $this->getContainer()->mediaSiteManager->getByFileId($fileId);
         $file  = $site->findFile($fileId, $fileVersion);
 
-        $pointActive = (int) $file->getAttribute('focalpoint.enabled', false);
-        $pointX      = (int) $file->getAttribute('focalpoint.x', null);
-        $pointY      = (int) $file->getAttribute('focalpoint.y', null);
+        $focalpoint = $file->getAttribute('focalpoint', array());
+        $pointActive = !empty($focalpoint['active']) ? (integer) $focalpoint['active'] : 0;
+        $pointX      = !empty($focalpoint['x']) ? (integer) $focalpoint['x'] : null;
+        $pointY      = !empty($focalpoint['y']) ? (integer) $focalpoint['y'] : null;
 
         if ($pointX !== null && $pointY !== null) {
             $imageAnalyzer = $this->getContainer()->mediaToolsImageAnalyzer;
@@ -66,11 +67,11 @@ class DataController extends Action
     {
         $fileId = $this->getParam('file_id');
         $fileVersion = $this->getParam('file_version');
-        $pointActive = (boolean) $this->getParam('point_active');
-        $pointX = $this->getParam('point_x');
-        $pointY = $this->getParam('point_y');
-        $width = $this->getParam('width');
-        $height = $this->getParam('height');
+        $pointActive = (integer) $this->getParam('point_active');
+        $pointX = (integer) $this->getParam('point_x');
+        $pointY = (integer) $this->getParam('point_y');
+        $width = (integer) $this->getParam('width');
+        $height = (integer) $this->getParam('height');
 
         $site = $this->getContainer()->mediaSiteManager->getByFileId($fileId);
         $file = $site->findFile($fileId, $fileVersion);
@@ -93,10 +94,8 @@ class DataController extends Action
             );
         }
 
-        $file->setAttribute('focalpoint.active', $pointActive);
-        $file->setAttribute('focalpoint.x', $pointX);
-
-        $file->setAttribute('focalpoint.y', $pointY);
+        $file->setAttribute('focalpoint', array('active' => $pointActive, 'x' => $pointX, 'y' => $pointY));
+        $site->setFileAttributes($file, $file->getAttributes());
 
         $cropTemplates = $this->getCropTemplates();
         $templateKeys = array();
@@ -104,12 +103,14 @@ class DataController extends Action
             $templateKeys[] = $cropTemplate->getKey();
         }
 
+        /*
         $batch = new \Phlexible\MediaCacheComponent\Queue\Batch();
         $batch
             ->file($file)
             ->templates($templateKeys);
         $batchQueuer = $this->getContainer()->mediacacheBatchQueuer;
         $cnt = $batchQueuer->add($batch);
+        */
 
         $this->_response->setResult(true, $this->hasParam('id') ? $this->getParam('id') : null, 'Focal point saved.');
     }
@@ -182,20 +183,22 @@ class DataController extends Action
             $filePath = $file->getPhysicalPath();
 
             $template = new ImageTemplate();
-            $template->setParameter('width', 400);
-            $template->setParameter('height', 400);
-            $template->setParameter('method', 'fit');
-            $template->setParameter('scale', 'down');
-
-            $toolkit = $template->getAppliedToolkit($filePath);
-            $toolkit->setFormat('jpg');
+            $template
+                ->setParameter('width', 400)
+                ->setParameter('height', 400)
+                ->setParameter('method', 'fit')
+                ->setParameter('scale', 'down')
+                ->setParameter('format', 'jpg')
+            ;
 
             $tempDir = $this->getContainer()->getParameter(':app.temp_dir');
-            $filename = $toolkit->save($tempDir . $fileId . '_' . $fileVersion, true);
+            $outFilename = $tempDir . $fileId . '_' . $fileVersion . '.jpg';
+
+            $this->getContainer()->mediaTemplatesApplierImage->apply($template, $file, $file->getPhysicalPath(), $outFilename);
 
             $this->_response
                 ->setContentType('image/jpg')
-                ->setFile($filename);
+                ->setFile($outFilename);
         } catch (\Exception $e) {
             $this->_response
                 ->setHttpResponseCode(500)
@@ -224,14 +227,14 @@ class DataController extends Action
         ksort($data);
         $data = array_values($data);
 
-        $t9n = $this->getContainer()->t9n;
+        $translator = $this->getContainer()->translator;
 
         array_unshift(
             $data,
             array(
                 'id'     => '_safe',
                 'type'   => 'safe',
-                'title'  => $t9n->focalpoint->safe_area,
+                'title'  => $translator->trans('focalpoint.safe_area', array(), 'gui', $this->getUser()->getInterfaceLanguage('en')),
                 'width'  => 0,
                 'height' => 0
             )

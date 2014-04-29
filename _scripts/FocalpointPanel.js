@@ -36,16 +36,16 @@ Phlexible.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
             //pressed: false,
             items: [{
                 text: this.strings.no_focal_point,
-                iconCls: 'm-focalpoint-no-icon',
+                iconCls: 'p-focalpoint-no-icon',
                 focal: 0,
                 checked: true
             },{
                 text: this.strings.use_focal_point,
-                iconCls: 'm-focalpoint-set-icon',
+                iconCls: 'p-focalpoint-set-icon',
                 focal: 1
             },{
                 text: this.strings.never_crop,
-                iconCls: 'm-focalpoint-never-icon',
+                iconCls: 'p-focalpoint-never-icon',
                 focal: -1
             }],
             changeHandler: function(btn, item) {
@@ -73,7 +73,7 @@ Phlexible.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
             scope: this
         },'->',{
             text: this.strings.save,
-            iconCls: 'm-focalpoint-save-icon',
+            iconCls: 'p-focalpoint-save-icon',
             //disabled: true,
             handler: this.savePoint,
             scope: this
@@ -82,10 +82,8 @@ Phlexible.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
         Phlexible.focalpoint.FocalpointPanel.superclass.initComponent.call(this);
 
         this.on({
-            render: {
-                fn: this.initTracker,
-                scope: this
-            }
+            render: this.initTracker,
+            scope: this
         });
     },
 
@@ -121,7 +119,9 @@ Phlexible.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
             }
         }).first();
         this.imageEl.on('load', this.updateImageSize, this);
-        this.imageEl.dom.src = this.getImageUrl(this.file_id, this.file_version);
+        if (this.file_id) {
+            this.imageEl.dom.src = this.getImageUrl(this.file_id, this.file_version);
+        }
 
         if (this.pointActive != 0) {
             this.pointEl.hide();
@@ -141,7 +141,7 @@ Phlexible.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
     },
 
     getImageUrl: function(file_id, file_version) {
-        return Phlexible.Router.generate('focalpoint_image', {file_id: this.file_id, file_version: this.file_version, dc: new Date().getTime()});
+        return Phlexible.Router.generate('focalpoint_image', {file_id: file_id, file_version: file_version, dc: new Date().getTime()});
     },
 
     loadFile: function(file_id, file_version) {
@@ -170,22 +170,20 @@ Phlexible.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
     },
 
     setImage: function(image) {
-        Phlexible.console.log('setImage('+image+')');
+        //Phlexible.console.log('setImage('+image+')');
         this.imageEl.dom.src = image;
     },
 
     updateImageSize: function() {
-        Phlexible.console.log('updateImageSize(' + this.imageEl.dom.width + ',' + this.imageEl.dom.height + ')');
+        //Phlexible.console.log('updateImageSize(' + this.imageEl.dom.width + ',' + this.imageEl.dom.height + ')');
 
         this.setImageSize(this.imageEl.dom.width, this.imageEl.dom.height);
-
         this.updateBoundary();
-
         this.loadPoint();
     },
 
     setImageSize: function(width, height) {
-        Phlexible.console.log('setImageSize('+width+','+height+')');
+        //Phlexible.console.log('setImageSize('+width+','+height+')');
 
         this.imageWidth = width;
         this.imageHeight = height;
@@ -207,8 +205,8 @@ Phlexible.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
             templateHeight = 0,
             width = 0,
             height = 0,
-            smallestWidth = 1000000,
-            smallestHeight = 1000000;
+            smallestWidth = this.imageWidth,
+            smallestHeight = this.imageHeight;
 
         for (var i=0; i<data.length; i++) {
             templateWidth = data[i][0];

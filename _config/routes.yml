@@ -9,8 +9,8 @@ focalpoint_set:
     requirements: { _resource: focalpoint }
 
 focalpoint_image:
-    path: '/focalpoint/data/image'
-    defaults: { module: focalpoint, controller: data, action: image }
+    path: '/focalpoint/data/image/:file_id/:file_version'
+    defaults: { module: focalpoint, controller: data, action: image, file_version: 1 }
     requirements: { _resource: focalpoint }
 
 focalpoint_templates:
