@@ -180,7 +180,6 @@ class DataController extends Action
         try {
             $site  = $this->getContainer()->mediaSiteManager->getByFileId($fileId);
             $file  = $site->findFile($fileId);
-            $filePath = $file->getPhysicalPath();
 
             $template = new ImageTemplate();
             $template
@@ -249,7 +248,7 @@ class DataController extends Action
     private function getCropTemplates()
     {
         return array_filter(
-            $this->getContainer()->mediatemplatesRepository->findAll(),
+            $this->getContainer()->mediaTemplatesRepository->findAll(),
             function($template) {
                 return $template instanceof ImageTemplate && $template->getMethod() === 'crop';
             }
