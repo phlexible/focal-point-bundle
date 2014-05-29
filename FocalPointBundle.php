@@ -11,11 +11,11 @@ namespace Phlexible\FocalPointComponent;
 use Phlexible\Component\Component;
 
 /**
- * Focal point component
+ * Focal point bundle
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */
-class FocalPointComponent extends Component
+class FocalPointBundle extends Component
 {
     const RESOURE_FOCAL_POINT = 'focalpoint';
 

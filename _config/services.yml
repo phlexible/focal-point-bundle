@@ -1,19 +1,19 @@
 services:
     # assets
-    focalpointAssetScripts:
+    focalpoint.asset.scripts:
         class: Phlexible\FocalPointComponent\Asset\ScriptCollection
         arguments: ["%focalpoint.asset.script_path%"]
         tags:
-            - ["asset.script", {priority: -500}]
+            - {name: "asset.script", priority: -500}
 
-    focalpointAssetCss:
+    focalpoint.asset.css:
         class: Phlexible\FocalPointComponent\Asset\CssCollection
         arguments: ["%focalpoint.asset.css_path%"]
         tags:
-            - ["asset.css"]
+            - {name: "asset.css"}
 
     # acl resources
-    focalpointResourceFocalpoint:
+    focalpoint.resource.focalpoint:
         class: Zend_Acl_Resource
         arguments: [focalpoint]
-        tags: [[security.acl.resource]]
+        tags: [{name: "security.acl.resource"}]

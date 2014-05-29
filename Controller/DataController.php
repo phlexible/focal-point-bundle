@@ -28,7 +28,7 @@ class DataController extends Action
         $width = $this->getParam('width');
         $height = $this->getParam('height');
 
-        $site  = $this->getContainer()->mediaSiteManager->getByFileId($fileId);
+        $site  = $this->getContainer()->get('mediasite.manager')->getByFileId($fileId);
         $file  = $site->findFile($fileId, $fileVersion);
 
         $focalpoint = $file->getAttribute('focalpoint', array());
@@ -37,7 +37,7 @@ class DataController extends Action
         $pointY      = !empty($focalpoint['y']) ? (integer) $focalpoint['y'] : null;
 
         if ($pointX !== null && $pointY !== null) {
-            $imageAnalyzer = $this->getContainer()->mediaToolsImageAnalyzer;
+            $imageAnalyzer = $this->getContainer()->get('mediatools.image_analyzer');
             $info = $imageAnalyzer->analyze($file->getPhysicalPath());
 
             list($pointX, $pointY) = $this->_calcPoint(
@@ -73,14 +73,14 @@ class DataController extends Action
         $width = (integer) $this->getParam('width');
         $height = (integer) $this->getParam('height');
 
-        $site = $this->getContainer()->mediaSiteManager->getByFileId($fileId);
+        $site = $this->getContainer()->get('mediasite.manager')->getByFileId($fileId);
         $file = $site->findFile($fileId, $fileVersion);
 
         $pointX = $pointX !== null ? round($pointX) : null;
         $pointY = $pointY !== null ? round($pointY) : null;
 
         if ($pointX !== null && $pointY !== null) {
-            $imageAnalyzer = $this->getContainer()->mediaToolsImageAnalyzer;
+            $imageAnalyzer = $this->getContainer()->get('mediatools.image_analyzer');
             $info = $imageAnalyzer->analyze($file->getPhysicalPath());
 
             list($pointX, $pointY) = $this->_calcPoint(
@@ -108,7 +108,7 @@ class DataController extends Action
         $batch
             ->file($file)
             ->templates($templateKeys);
-        $batchQueuer = $this->getContainer()->mediacacheBatchQueuer;
+        $batchQueuer = $this->getContainer()->get('mediacacheBatchQueuer');
         $cnt = $batchQueuer->add($batch);
         */
 
@@ -178,7 +178,7 @@ class DataController extends Action
         $fileVersion = $this->getParam('file_version');
 
         try {
-            $site  = $this->getContainer()->mediaSiteManager->getByFileId($fileId);
+            $site  = $this->getContainer()->get('mediasite.manager')->getByFileId($fileId);
             $file  = $site->findFile($fileId);
 
             $template = new ImageTemplate();
@@ -190,10 +190,10 @@ class DataController extends Action
                 ->setParameter('format', 'jpg')
             ;
 
-            $tempDir = $this->getContainer()->getParameter(':app.temp_dir');
+            $tempDir = $this->getContainer()->getParameter('kernel.cache_dir');
             $outFilename = $tempDir . $fileId . '_' . $fileVersion . '.jpg';
 
-            $this->getContainer()->mediaTemplatesApplierImage->apply($template, $file, $file->getPhysicalPath(), $outFilename);
+            $this->getContainer()->get('mediatemplates.applier.image')->apply($template, $file, $file->getPhysicalPath(), $outFilename);
 
             $this->_response
                 ->setContentType('image/jpg')
@@ -226,7 +226,7 @@ class DataController extends Action
         ksort($data);
         $data = array_values($data);
 
-        $translator = $this->getContainer()->translator;
+        $translator = $this->getContainer()->get('translator');
 
         array_unshift(
             $data,
@@ -248,7 +248,7 @@ class DataController extends Action
     private function getCropTemplates()
     {
         return array_filter(
-            $this->getContainer()->mediaTemplatesRepository->findAll(),
+            $this->getContainer()->get('mediatemplates.repository')->findAll(),
             function($template) {
                 return $template instanceof ImageTemplate && $template->getMethod() === 'crop';
             }
