@@ -25,10 +25,10 @@ class FocalPointExtension extends Extension
      */
     public function load(array $config, ContainerBuilder $container)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../_config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
-        $container->setParameter('focalpoint.asset.script_path', __DIR__ . '/../_scripts');
-        $container->setParameter('focalpoint.asset.css_path', __DIR__ . '/../_styles');
+        $container->setParameter('focalpoint.asset.script_path', __DIR__ . '/../Resources/scripts');
+        $container->setParameter('focalpoint.asset.css_path', __DIR__ . '/../Resources/styles');
     }
 }

@@ -8,27 +8,35 @@
 
 namespace Phlexible\FocalPointComponent\Controller;
 
-use Phlexible\CoreComponent\Controller\Action\Action;
+use Phlexible\CoreComponent\Controller\Controller;
+use Phlexible\CoreComponent\Response\ResultResponse;
 use Phlexible\MediaTemplatesComponent\Template\ImageTemplate;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Data controller
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */
-class DataController extends Action
+class DataController extends Controller
 {
     /**
      * Get action
+     *
+     * @param Request $request
+     *
+     * @return ResultResponse
      */
-    public function getAction()
+    public function getAction(Request $request)
     {
-        $fileId = $this->getParam('file_id');
-        $fileVersion = $this->getParam('file_version');
-        $width = $this->getParam('width');
-        $height = $this->getParam('height');
+        $fileId = $request->get('file_id');
+        $fileVersion = $request->get('file_version');
+        $width = $request->get('width');
+        $height = $request->get('height');
 
-        $site  = $this->getContainer()->get('mediasite.manager')->getByFileId($fileId);
+        $site  = $this->get('mediasite.manager')->getByFileId($fileId);
         $file  = $site->findFile($fileId, $fileVersion);
 
         $focalpoint = $file->getAttribute('focalpoint', array());
@@ -37,7 +45,7 @@ class DataController extends Action
         $pointY      = !empty($focalpoint['y']) ? (integer) $focalpoint['y'] : null;
 
         if ($pointX !== null && $pointY !== null) {
-            $imageAnalyzer = $this->getContainer()->get('mediatools.image_analyzer');
+            $imageAnalyzer = $this->get('mediatools.image_analyzer');
             $info = $imageAnalyzer->analyze($file->getPhysicalPath());
 
             list($pointX, $pointY) = $this->_calcPoint(
@@ -57,30 +65,34 @@ class DataController extends Action
             'focalpoint_y'      => $pointY,
         );
 
-        $this->_response->setResult(true, $this->hasParam('id') ? $this->getParam('id') : null, null, $data);
+        return new ResultResponse(true, $data);
     }
 
     /**
      * Set action
+     *
+     * @param Request $request
+     *
+     * @return ResultResponse
      */
-    public function setAction()
+    public function setAction(Request $request)
     {
-        $fileId = $this->getParam('file_id');
-        $fileVersion = $this->getParam('file_version');
-        $pointActive = (integer) $this->getParam('point_active');
-        $pointX = (integer) $this->getParam('point_x');
-        $pointY = (integer) $this->getParam('point_y');
-        $width = (integer) $this->getParam('width');
-        $height = (integer) $this->getParam('height');
+        $fileId = $request->get('file_id');
+        $fileVersion = $request->get('file_version');
+        $pointActive = (integer) $request->get('point_active');
+        $pointX = (integer) $request->get('point_x');
+        $pointY = (integer) $request->get('point_y');
+        $width = (integer) $request->get('width');
+        $height = (integer) $request->get('height');
 
-        $site = $this->getContainer()->get('mediasite.manager')->getByFileId($fileId);
+        $site = $this->get('mediasite.manager')->getByFileId($fileId);
         $file = $site->findFile($fileId, $fileVersion);
 
         $pointX = $pointX !== null ? round($pointX) : null;
         $pointY = $pointY !== null ? round($pointY) : null;
 
         if ($pointX !== null && $pointY !== null) {
-            $imageAnalyzer = $this->getContainer()->get('mediatools.image_analyzer');
+            $imageAnalyzer = $this->get('mediatools.image_analyzer');
             $info = $imageAnalyzer->analyze($file->getPhysicalPath());
 
             list($pointX, $pointY) = $this->_calcPoint(
@@ -112,7 +124,7 @@ class DataController extends Action
         $cnt = $batchQueuer->add($batch);
         */
 
-        $this->_response->setResult(true, $this->hasParam('id') ? $this->getParam('id') : null, 'Focal point saved.');
+        return new ResultResponse(true, 'Focal point saved.');
     }
 
     /**
@@ -171,42 +183,40 @@ class DataController extends Action
 
     /**
      * Image action
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
-    public function imageAction()
+    public function imageAction(Request $request)
     {
-        $fileId = $this->getParam('file_id');
-        $fileVersion = $this->getParam('file_version');
+        $fileId = $request->get('file_id');
+        $fileVersion = $request->get('file_version');
 
-        try {
-            $site  = $this->getContainer()->get('mediasite.manager')->getByFileId($fileId);
-            $file  = $site->findFile($fileId);
+        $site  = $this->get('mediasite.manager')->getByFileId($fileId);
+        $file  = $site->findFile($fileId);
 
-            $template = new ImageTemplate();
-            $template
-                ->setParameter('width', 400)
-                ->setParameter('height', 400)
-                ->setParameter('method', 'fit')
-                ->setParameter('scale', 'down')
-                ->setParameter('format', 'jpg')
-            ;
+        $template = new ImageTemplate();
+        $template
+            ->setParameter('width', 400)
+            ->setParameter('height', 400)
+            ->setParameter('method', 'fit')
+            ->setParameter('scale', 'down')
+            ->setParameter('format', 'jpg')
+        ;
 
-            $tempDir = $this->getContainer()->getParameter('kernel.cache_dir');
-            $outFilename = $tempDir . $fileId . '_' . $fileVersion . '.jpg';
+        $tempDir = $this->getParameter('kernel.cache_dir');
+        $outFilename = $tempDir . $fileId . '_' . $fileVersion . '.jpg';
 
-            $this->getContainer()->get('mediatemplates.applier.image')->apply($template, $file, $file->getPhysicalPath(), $outFilename);
+        $this->get('mediatemplates.applier.image')->apply($template, $file, $file->getPhysicalPath(), $outFilename);
 
-            $this->_response
-                ->setContentType('image/jpg')
-                ->setFile($outFilename);
-        } catch (\Exception $e) {
-            $this->_response
-                ->setHttpResponseCode(500)
-                ->setBody($e->getMessage());
-        }
+        return new Response(file_get_contents($outFilename), 200, array('Content-type' => 'image/jpg'));
     }
 
     /**
      * Templates action
+     *
+     * @return JsonResponse
      */
     public function templatesAction()
     {
@@ -226,7 +236,7 @@ class DataController extends Action
         ksort($data);
         $data = array_values($data);
 
-        $translator = $this->getContainer()->get('translator');
+        $translator = $this->get('translator');
 
         array_unshift(
             $data,
@@ -239,7 +249,7 @@ class DataController extends Action
             )
         );
 
-        $this->_response->setAjaxPayload(array('templates' => $data));
+        return new JsonResponse(array('templates' => $data));
     }
 
     /**
@@ -248,7 +258,7 @@ class DataController extends Action
     private function getCropTemplates()
     {
         return array_filter(
-            $this->getContainer()->get('mediatemplates.repository')->findAll(),
+            $this->get('mediatemplates.repository')->findAll(),
             function($template) {
                 return $template instanceof ImageTemplate && $template->getMethod() === 'crop';
             }

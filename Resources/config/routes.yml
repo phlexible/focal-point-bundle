@@ -1,0 +1,19 @@
+focalpoint_get:
+    path: '/focalpoint/data/get'
+    defaults: { module: focalpoint, controller: data, action: get, _controller: FocalPointBundle:data:get }
+    requirements: { _resource: focalpoint }
+
+focalpoint_set:
+    path: '/focalpoint/data/set'
+    defaults: { module: focalpoint, controller: data, action: set, _controller: FocalPointBundle:data:set }
+    requirements: { _resource: focalpoint }
+
+focalpoint_image:
+    path: '/focalpoint/data/image/:file_id/:file_version'
+    defaults: { module: focalpoint, controller: data, action: image, file_version: 1, _controller: FocalPointBundle:data:image }
+    requirements: { _resource: focalpoint }
+
+focalpoint_templates:
+    path: '/focalpoint/data/templates'
+    defaults: { module: focalpoint, controller: data, action: templates, _controller: FocalPointBundle:data:templates }
+    requirements: { _resource: focalpoint }
