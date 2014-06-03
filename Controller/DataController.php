@@ -11,6 +11,8 @@ namespace Phlexible\FocalPointComponent\Controller;
 use Phlexible\CoreComponent\Controller\Controller;
 use Phlexible\CoreComponent\Response\ResultResponse;
 use Phlexible\MediaTemplatesComponent\Template\ImageTemplate;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Data controller
  *
  * @author Stephan Wentz <sw@brainbits.net>
+ * @Route("/focalpoint")
  */
 class DataController extends Controller
 {
@@ -28,6 +31,8 @@ class DataController extends Controller
      * @param Request $request
      *
      * @return ResultResponse
+     * @Route("/get", name="focalpoint_get")
+     * @Security("is_granted('focalpoint')")
      */
     public function getAction(Request $request)
     {
@@ -74,6 +79,7 @@ class DataController extends Controller
      * @param Request $request
      *
      * @return ResultResponse
+     * @Route("/set", name="focalpoint_set")
      */
     public function setAction(Request $request)
     {
@@ -187,6 +193,7 @@ class DataController extends Controller
      * @param Request $request
      *
      * @return Response
+     * @Route("/image", name="focalpoint_image")
      */
     public function imageAction(Request $request)
     {
@@ -217,6 +224,7 @@ class DataController extends Controller
      * Templates action
      *
      * @return JsonResponse
+     * @Route("/templates", name="focalpoint_templates")
      */
     public function templatesAction()
     {

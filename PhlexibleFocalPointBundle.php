@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */
-class FocalPointBundle extends Bundle
+class PhlexibleFocalPointBundle extends Bundle
 {
     const RESOURE_FOCAL_POINT = 'focalpoint';
 }

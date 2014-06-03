@@ -12,8 +12,8 @@ services:
         tags:
             - {name: "asset.css"}
 
-    # acl resources
-    focalpoint.resource.focalpoint:
-        class: Zend_Acl_Resource
-        arguments: [focalpoint]
-        tags: [{name: "security.acl.resource"}]
+    # acl provider
+    focalpoint.acl_provider:
+        class: Phlexible\FocalPointComponent\Acl\FocalPointAclProvider
+        tags:
+            - {name: "security.acl.provider"}
