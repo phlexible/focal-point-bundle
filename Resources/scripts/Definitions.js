@@ -43,3 +43,10 @@ Phlexible.mediamanager.FileDetailWindow.prototype.load =
         //        foundItem.enable();
         //}
     });
+
+Phlexible.mediamanager.util.Bullets.prototype.buildBullets =
+	Phlexible.mediamanager.util.Bullets.prototype.buildBullets.createSequence(function(values) {
+		if (values.focal) {
+			this.bullets += '<img src="' + Phlexible.component('/phlexiblefocalpoint/images/bullet_focal.gif')+'" width="8" height="12" style="vertical-align: middle;" />';
+		}
+	});
