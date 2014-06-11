@@ -9,7 +9,7 @@
 namespace Phlexible\FocalPointComponent\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Phlexible\CoreComponent\Response\ResultResponse;
+use Phlexible\GuiComponent\Response\ResultResponse;
 use Phlexible\MediaTemplatesComponent\Template\ImageTemplate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
