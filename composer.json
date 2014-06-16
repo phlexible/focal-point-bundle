@@ -1,10 +1,11 @@
 {
-    "name": "phlexible/focal-point-component",
-    "description": "phlexible.media focal point component",
+    "name": "phlexible/focal-point-bundle",
+    "description": "phlexible focal point bundle",
     "license": "proprietary",
+	"type": "symfony-bundle",
     "autoload": {
-        "psr-4": { 
-            "Phlexible\\FocalPointComponent\\": ""
+        "psr-4": {
+            "Phlexible\\FocalPointBundle\\": ""
         }
     },
     "require": {
@@ -14,7 +15,7 @@
     "repositories": [
         {
             "type": "composer",
-            "url": "https://packages.brainbits.net/phlexible-components/"
+            "url": "https://packages.brainbits.net/phlexible-bundles/"
         }
     ],
     "minimum-stability": "stable"

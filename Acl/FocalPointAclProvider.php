@@ -6,9 +6,9 @@
  * @license   proprietary
  */
 
-namespace Phlexible\FocalPointComponent\Acl;
+namespace Phlexible\FocalPointBundle\Acl;
 
-use Phlexible\SecurityComponent\Acl\AclProvider\AclProvider;
+use Phlexible\SecurityBundle\Acl\AclProvider\AclProvider;
 
 /**
  * Focal point acl provider

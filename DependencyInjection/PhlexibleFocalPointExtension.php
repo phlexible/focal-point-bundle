@@ -6,7 +6,7 @@
  * @license   proprietary
  */
 
-namespace Phlexible\FocalPointComponent\DependencyInjection;
+namespace Phlexible\FocalPointBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -27,8 +27,5 @@ class PhlexibleFocalPointExtension extends Extension
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
-
-        $container->setParameter('focalpoint.asset.script_path', __DIR__ . '/../Resources/scripts');
-        $container->setParameter('focalpoint.asset.css_path', __DIR__ . '/../Resources/styles');
     }
 }

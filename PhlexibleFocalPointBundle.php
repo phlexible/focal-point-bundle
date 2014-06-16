@@ -6,7 +6,7 @@
  * @license   proprietary
  */
 
-namespace Phlexible\FocalPointComponent;
+namespace Phlexible\FocalPointBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

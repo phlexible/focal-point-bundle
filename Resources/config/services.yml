@@ -1,19 +1,13 @@
 services:
-    # assets
-    focalpoint.asset.scripts:
-        class: Phlexible\FocalPointComponent\Asset\ScriptCollection
-        arguments: ["%focalpoint.asset.script_path%"]
-        tags:
-            - {name: "asset.script", priority: -500}
-
-    focalpoint.asset.css:
-        class: Phlexible\FocalPointComponent\Asset\CssCollection
-        arguments: ["%focalpoint.asset.css_path%"]
-        tags:
-            - {name: "asset.css"}
-
-    # acl provider
+    # acl providers
     focalpoint.acl_provider:
-        class: Phlexible\FocalPointComponent\Acl\FocalPointAclProvider
+        class: Phlexible\FocalPointBundle\Acl\FocalPointAclProvider
         tags:
             - {name: "security.acl.provider"}
+
+    # asset providers
+    focalpoint.asset_provider:
+        class: Phlexible\FocalPointBundle\AssetProvider\FocalPointAssetProvider
+        arguments: [@file_locator]
+        tags:
+            - {name: "asset.provider", priority: -500}
