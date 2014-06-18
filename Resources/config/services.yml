@@ -1,13 +1,13 @@
 services:
     # acl providers
-    focalpoint.acl_provider:
-        class: Phlexible\FocalPointBundle\Acl\FocalPointAclProvider
+    phlexible_focal_point.acl_provider:
+        class: Phlexible\FocalPointBundle\AclProvider\FocalPointAclProvider
         tags:
-            - {name: "security.acl.provider"}
+            - {name: phlexible_security.acl.provider}
 
     # asset providers
-    focalpoint.asset_provider:
+    phlexible_focal_point.asset_provider:
         class: Phlexible\FocalPointBundle\AssetProvider\FocalPointAssetProvider
         arguments: [@file_locator]
         tags:
-            - {name: "asset.provider", priority: -500}
+            - {name: phlexible_gui.asset.provider, priority: -500}
