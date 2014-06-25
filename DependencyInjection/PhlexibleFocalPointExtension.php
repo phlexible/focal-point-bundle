@@ -6,7 +6,7 @@
  * @license   proprietary
  */
 
-namespace Phlexible\FocalPointBundle\DependencyInjection;
+namespace Phlexible\Bundle\FocalPointBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

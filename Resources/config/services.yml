@@ -1,14 +1,14 @@
 services:
     # acl providers
     phlexible_focal_point.acl_provider:
-        class: Phlexible\FocalPointBundle\AclProvider\FocalPointAclProvider
+        class: Phlexible\Bundle\FocalPointBundle\AclProvider\FocalPointAclProvider
         public: false
         tags:
             - {name: phlexible_security.acl.provider}
 
     # asset providers
     phlexible_focal_point.asset_provider:
-        class: Phlexible\FocalPointBundle\AssetProvider\FocalPointAssetProvider
+        class: Phlexible\Bundle\FocalPointBundle\AssetProvider\FocalPointAssetProvider
         public: false
         arguments: [@file_locator]
         tags:

@@ -6,11 +6,11 @@
  * @license   proprietary
  */
 
-namespace Phlexible\FocalPointBundle\Controller;
+namespace Phlexible\Bundle\FocalPointBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Phlexible\GuiBundle\Response\ResultResponse;
-use Phlexible\MediaTemplateBundle\Template\ImageTemplate;
+use Phlexible\Bundle\GuiBundle\Response\ResultResponse;
+use Phlexible\Bundle\MediaTemplateBundle\Template\ImageTemplate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -122,7 +122,7 @@ class DataController extends Controller
         }
 
         /*
-        $batch = new \Phlexible\MediaCacheBundle\Queue\Batch();
+        $batch = new \Phlexible\Bundle\MediaCacheBundle\Queue\Batch();
         $batch
             ->file($file)
             ->templates($templateKeys);
