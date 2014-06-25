@@ -9,8 +9,7 @@
         }
     },
     "require": {
-        "php": ">=5.3.0",
-        "phlexible/media": "*"
+        "php": ">=5.3.0"
     },
     "repositories": [
         {
