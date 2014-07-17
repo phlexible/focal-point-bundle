@@ -2,7 +2,7 @@ Ext.ns('Phlexible.focalpoint');
 
 Phlexible.mediamanager.FileDetailWindow.prototype.populateTabs =
     Phlexible.mediamanager.FileDetailWindow.prototype.populateTabs.createSequence(function() {
-        if (Phlexible.User.isGranted('focalpoint')) {
+        if (!Phlexible.User.isGranted('focalpoint')) {
             return;
         }
 
