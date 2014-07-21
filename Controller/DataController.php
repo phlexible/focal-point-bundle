@@ -10,7 +10,7 @@ namespace Phlexible\Bundle\FocalPointBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Phlexible\Bundle\GuiBundle\Response\ResultResponse;
-use Phlexible\Bundle\MediaTemplateBundle\Template\ImageTemplate;
+use Phlexible\Bundle\MediaTemplateBundle\Model\ImageTemplate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -41,16 +41,16 @@ class DataController extends Controller
         $width = $request->get('width');
         $height = $request->get('height');
 
-        $site  = $this->get('mediasite.manager')->getByFileId($fileId);
+        $site  = $this->get('phlexible_media_site.manager')->getByFileId($fileId);
         $file  = $site->findFile($fileId, $fileVersion);
 
         $focalpoint = $file->getAttribute('focalpoint', array());
-        $pointActive = !empty($focalpoint['active']) ? (integer) $focalpoint['active'] : 0;
-        $pointX      = !empty($focalpoint['x']) ? (integer) $focalpoint['x'] : null;
-        $pointY      = !empty($focalpoint['y']) ? (integer) $focalpoint['y'] : null;
+        $pointActive = !empty($focalpoint['active']) ? (int) $focalpoint['active'] : 0;
+        $pointX      = !empty($focalpoint['x']) ? (int) $focalpoint['x'] : null;
+        $pointY      = !empty($focalpoint['y']) ? (int) $focalpoint['y'] : null;
 
         if ($pointX !== null && $pointY !== null) {
-            $imageAnalyzer = $this->get('mediatools.image_analyzer');
+            $imageAnalyzer = $this->get('phlexible_media_tool.image_analyzer');
             $info = $imageAnalyzer->analyze($file->getPhysicalPath());
 
             list($pointX, $pointY) = $this->_calcPoint(
@@ -85,20 +85,20 @@ class DataController extends Controller
     {
         $fileId = $request->get('file_id');
         $fileVersion = $request->get('file_version');
-        $pointActive = (integer) $request->get('point_active');
-        $pointX = (integer) $request->get('point_x');
-        $pointY = (integer) $request->get('point_y');
-        $width = (integer) $request->get('width');
-        $height = (integer) $request->get('height');
+        $pointActive = (int) $request->get('point_active');
+        $pointX = (int) $request->get('point_x');
+        $pointY = (int) $request->get('point_y');
+        $width = (int) $request->get('width');
+        $height = (int) $request->get('height');
 
-        $site = $this->get('mediasite.manager')->getByFileId($fileId);
+        $site = $this->get('phlexible_media_site.manager')->getByFileId($fileId);
         $file = $site->findFile($fileId, $fileVersion);
 
         $pointX = $pointX !== null ? round($pointX) : null;
         $pointY = $pointY !== null ? round($pointY) : null;
 
         if ($pointX !== null && $pointY !== null) {
-            $imageAnalyzer = $this->get('mediatools.image_analyzer');
+            $imageAnalyzer = $this->get('phlexible_media_tool.image_analyzer');
             $info = $imageAnalyzer->analyze($file->getPhysicalPath());
 
             list($pointX, $pointY) = $this->_calcPoint(
@@ -134,12 +134,12 @@ class DataController extends Controller
     }
 
     /**
-     * @param integer $imageWidth
-     * @param integer $imageHeight
-     * @param integer $tempWidth
-     * @param integer $tempHeight
-     * @param integer $pointX
-     * @param integer $pointY
+     * @param int     $imageWidth
+     * @param int     $imageHeight
+     * @param int     $tempWidth
+     * @param int     $tempHeight
+     * @param int     $pointX
+     * @param int     $pointY
      * @param string  $mode
      *
      * @throws \Exception
@@ -200,7 +200,7 @@ class DataController extends Controller
         $fileId = $request->get('file_id');
         $fileVersion = $request->get('file_version');
 
-        $site  = $this->get('mediasite.manager')->getByFileId($fileId);
+        $site  = $this->get('phlexible_media_site.manager')->getByFileId($fileId);
         $file  = $site->findFile($fileId);
 
         $template = new ImageTemplate();
@@ -212,10 +212,10 @@ class DataController extends Controller
             ->setParameter('format', 'jpg')
         ;
 
-        $tempDir = $this->getParameter('kernel.cache_dir');
+        $tempDir = $this->container->getParameter('kernel.cache_dir');
         $outFilename = $tempDir . $fileId . '_' . $fileVersion . '.jpg';
 
-        $this->get('mediatemplates.applier.image')->apply($template, $file, $file->getPhysicalPath(), $outFilename);
+        $this->get('phlexible_media_template.applier.image')->apply($template, $file, $file->getPhysicalPath(), $outFilename);
 
         return new Response(file_get_contents($outFilename), 200, array('Content-type' => 'image/jpg'));
     }
@@ -266,7 +266,7 @@ class DataController extends Controller
     private function getCropTemplates()
     {
         return array_filter(
-            $this->get('mediatemplates.repository')->findAll(),
+            $this->get('phlexible_media_template.template_manager')->findAll(),
             function($template) {
                 return $template instanceof ImageTemplate && $template->getMethod() === 'crop';
             }

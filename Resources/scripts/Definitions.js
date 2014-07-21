@@ -16,7 +16,7 @@ Phlexible.mediamanager.FileDetailWindow.prototype.load =
     Phlexible.mediamanager.FileDetailWindow.prototype.load.createSequence(function() {
         var foundItem = null;
 
-        this.getComponent(1).items.each(function(item) {
+        this.getTabPanel().items.each(function(item) {
             if (item.title === Phlexible.focalpoint.Strings.focal_point) {
                 foundItem = item;
                 return false;
