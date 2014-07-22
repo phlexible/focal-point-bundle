@@ -41,7 +41,7 @@ class DataController extends Controller
         $width = $request->get('width');
         $height = $request->get('height');
 
-        $site  = $this->get('phlexible_media_site.manager')->getByFileId($fileId);
+        $site  = $this->get('phlexible_media_site.site_manager')->getByFileId($fileId);
         $file  = $site->findFile($fileId, $fileVersion);
 
         $focalpoint = $file->getAttribute('focalpoint', array());
@@ -91,7 +91,7 @@ class DataController extends Controller
         $width = (int) $request->get('width');
         $height = (int) $request->get('height');
 
-        $site = $this->get('phlexible_media_site.manager')->getByFileId($fileId);
+        $site = $this->get('phlexible_media_site.site_manager')->getByFileId($fileId);
         $file = $site->findFile($fileId, $fileVersion);
 
         $pointX = $pointX !== null ? round($pointX) : null;
@@ -200,7 +200,7 @@ class DataController extends Controller
         $fileId = $request->get('file_id');
         $fileVersion = $request->get('file_version');
 
-        $site  = $this->get('phlexible_media_site.manager')->getByFileId($fileId);
+        $site  = $this->get('phlexible_media_site.site_manager')->getByFileId($fileId);
         $file  = $site->findFile($fileId);
 
         $template = new ImageTemplate();
