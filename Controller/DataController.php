@@ -8,6 +8,7 @@
 
 namespace Phlexible\Bundle\FocalPointBundle\Controller;
 
+use Phlexible\Bundle\MediaCacheBundle\Queue\Batch;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Phlexible\Bundle\GuiBundle\Response\ResultResponse;
 use Phlexible\Bundle\MediaTemplateBundle\Model\ImageTemplate;
@@ -70,7 +71,7 @@ class DataController extends Controller
             'focalpoint_y'      => $pointY,
         );
 
-        return new ResultResponse(true, $data);
+        return new ResultResponse(true, '', $data);
     }
 
     /**
@@ -113,22 +114,23 @@ class DataController extends Controller
         }
 
         $file->setAttribute('focalpoint', array('active' => $pointActive, 'x' => $pointX, 'y' => $pointY));
-        $site->setFileAttributes($file, $file->getAttributes());
+        $site->setFileAttributes($file, $file->getAttributes(), $this->getUser()->getId());
+
+        $batch = new Batch();
+        $batch->addFile($file);
 
         $cropTemplates = $this->getCropTemplates();
-        $templateKeys = array();
         foreach ($cropTemplates as $cropTemplate) {
-            $templateKeys[] = $cropTemplate->getKey();
+            $batch->addTemplate($cropTemplate);
         }
 
-        /*
-        $batch = new \Phlexible\Bundle\MediaCacheBundle\Queue\Batch();
-        $batch
-            ->file($file)
-            ->templates($templateKeys);
-        $batchQueuer = $this->getContainer()->get('mediacacheBatchQueuer');
-        $cnt = $batchQueuer->add($batch);
-        */
+        $batchResolver = $this->get('phlexible_media_cache.queue.batch_resolver');
+        $queue = $batchResolver->resolve($batch);
+
+        $queueManager = $this->get('phlexible_media_cache.queue_manager');
+        foreach ($queue->all() as $queueItem) {
+            $queueManager->updateQueueItem($queueItem);
+        }
 
         return new ResultResponse(true, 'Focal point saved.');
     }
@@ -145,7 +147,7 @@ class DataController extends Controller
      * @throws \Exception
      * @return array
      */
-    protected function _calcPoint($imageWidth, $imageHeight, $tempWidth, $tempHeight, $pointX, $pointY, $mode)
+    private function _calcPoint($imageWidth, $imageHeight, $tempWidth, $tempHeight, $pointX, $pointY, $mode)
     {
         //echo 'image: '.$attributes->width." ".$attributes->height."<br>";
         //echo 'point: '.$pointX." ".$pointY."<br>";
