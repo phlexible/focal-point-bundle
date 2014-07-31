@@ -1,4 +1,12 @@
 services:
+    phlexible_focal_point.focalpoint_calculator:
+        class: Phlexible\Bundle\FocalPointBundle\Focalpoint\Calculator
+        arguments: [@phlexible_media_tool.image_analyzer]
+
+    phlexible_focal_point.crop_template_queuer:
+        class: Phlexible\Bundle\FocalPointBundle\Queue\CropTemplateQueuer
+        arguments: [@phlexible_media_template.template_manager, @phlexible_media_cache.queue_manager, @phlexible_media_cache.queue.batch_resolver]
+
     # acl providers
     phlexible_focal_point.acl_provider:
         class: Phlexible\Bundle\FocalPointBundle\AclProvider\FocalPointAclProvider

@@ -15,7 +15,7 @@ Phlexible.focalpoint.MainPanel = Ext.extend(Ext.Panel, {
             disabled: true,
             viewConfig: {
                 deferEmptyText: false,
-                emptyText: '_no templates with focal point',
+                emptyText: this.strings.no_crop_templates,
                 forceFit: true
             },
             store: new Ext.data.JsonStore({

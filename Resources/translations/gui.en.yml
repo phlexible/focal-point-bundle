@@ -7,3 +7,4 @@ focalpoint:
     safe_area: 'Safe area'
     title: Title
     save: Save
+    no_crop_templates: No crop templates found

@@ -45,30 +45,13 @@ class DataController extends Controller
         $site  = $this->get('phlexible_media_site.site_manager')->getByFileId($fileId);
         $file  = $site->findFile($fileId, $fileVersion);
 
-        $focalpoint = $file->getAttribute('focalpoint', array());
-        $pointActive = !empty($focalpoint['active']) ? (int) $focalpoint['active'] : 0;
-        $pointX      = !empty($focalpoint['x']) ? (int) $focalpoint['x'] : null;
-        $pointY      = !empty($focalpoint['y']) ? (int) $focalpoint['y'] : null;
-
-        if ($pointX !== null && $pointY !== null) {
-            $imageAnalyzer = $this->get('phlexible_media_tool.image_analyzer');
-            $info = $imageAnalyzer->analyze($file->getPhysicalPath());
-
-            list($pointX, $pointY) = $this->_calcPoint(
-                $info->getWidth(),
-                $info->getHeight(),
-                $width,
-                $height,
-                $pointX,
-                $pointY,
-                'down'
-            );
-        }
+        $calculator = $this->get('phlexible_focal_point.focalpoint_calculator');
+        $focalpoint = $calculator->calculateDown($file, $width, $height);
 
         $data = array(
-            'focalpoint_active' => $pointActive,
-            'focalpoint_x'      => $pointX,
-            'focalpoint_y'      => $pointY,
+            'focalpoint_active' => $focalpoint->getStatus(),
+            'focalpoint_x'      => $focalpoint->getX(),
+            'focalpoint_y'      => $focalpoint->getY(),
         );
 
         return new ResultResponse(true, '', $data);
@@ -98,95 +81,16 @@ class DataController extends Controller
         $pointX = $pointX !== null ? round($pointX) : null;
         $pointY = $pointY !== null ? round($pointY) : null;
 
-        if ($pointX !== null && $pointY !== null) {
-            $imageAnalyzer = $this->get('phlexible_media_tool.image_analyzer');
-            $info = $imageAnalyzer->analyze($file->getPhysicalPath());
+        $calculator = $this->get('phlexible_focal_point.focalpoint_calculator');
+        $focalpoint = $calculator->calculateUp($file, $width, $height, $pointActive, $pointX, $pointY);
 
-            list($pointX, $pointY) = $this->_calcPoint(
-                $info->getWidth(),
-                $info->getHeight(),
-                $width,
-                $height,
-                $pointX,
-                $pointY,
-                'up'
-            );
-        }
-
-        $file->setAttribute('focalpoint', array('active' => $pointActive, 'x' => $pointX, 'y' => $pointY));
+        $file->setAttribute('focalpoint', array('active' => $focalpoint->getStatus(), 'x' => $focalpoint->getX(), 'y' => $focalpoint->getY()));
         $site->setFileAttributes($file, $file->getAttributes(), $this->getUser()->getId());
 
-        $batch = new Batch();
-        $batch->addFile($file);
-
-        $cropTemplates = $this->getCropTemplates();
-        foreach ($cropTemplates as $cropTemplate) {
-            $batch->addTemplate($cropTemplate);
-        }
-
-        $batchResolver = $this->get('phlexible_media_cache.queue.batch_resolver');
-        $queue = $batchResolver->resolve($batch);
-
-        $queueManager = $this->get('phlexible_media_cache.queue_manager');
-        foreach ($queue->all() as $queueItem) {
-            $queueManager->updateQueueItem($queueItem);
-        }
+        $cropTemplateQueuer = $this->get('phlexible_focal_point.crop_template_queuer');
+        $cropTemplateQueuer->queueCropTemplates($file);
 
         return new ResultResponse(true, 'Focal point saved.');
-    }
-
-    /**
-     * @param int     $imageWidth
-     * @param int     $imageHeight
-     * @param int     $tempWidth
-     * @param int     $tempHeight
-     * @param int     $pointX
-     * @param int     $pointY
-     * @param string  $mode
-     *
-     * @throws \Exception
-     * @return array
-     */
-    private function _calcPoint($imageWidth, $imageHeight, $tempWidth, $tempHeight, $pointX, $pointY, $mode)
-    {
-        //echo 'image: '.$attributes->width." ".$attributes->height."<br>";
-        //echo 'point: '.$pointX." ".$pointY."<br>";
-
-        if ($tempWidth < $imageWidth && $tempHeight < $imageHeight) {
-            $ratio = 1;
-            if ($tempWidth == 400) {
-                $ratio = $imageWidth / 400;
-            } elseif ($tempHeight == 400) {
-                $ratio = $imageHeight / 400;
-            }
-
-            if ($mode === 'up') {
-                $pointX = round($pointX * $ratio);
-                $pointY = round($pointY * $ratio);
-            } elseif ($mode === 'down') {
-                $pointX = round($pointX / $ratio);
-                $pointY = round($pointY / $ratio);
-            } else {
-                throw new \Exception("unknown mode $mode");
-            }
-
-            //echo 'ratio: '.$ratio."<br>";
-            //echo 'calulated: ' . $pointX." ".$pointY;
-        }
-
-        if ($pointX < 0) {
-            $pointX = 0;
-        } elseif ($pointX > $imageWidth) {
-            $pointX = $imageWidth;
-        }
-
-        if ($pointY < 0) {
-            $pointY = 0;
-        } elseif ($pointY > $imageHeight) {
-            $pointY = $imageHeight;
-        }
-
-        return array($pointX, $pointY);
     }
 
     /**
@@ -217,9 +121,14 @@ class DataController extends Controller
         $tempDir = $this->container->getParameter('kernel.cache_dir');
         $outFilename = $tempDir . $fileId . '_' . $fileVersion . '.jpg';
 
-        $this->get('phlexible_media_template.applier.image')->apply($template, $file, $file->getPhysicalPath(), $outFilename);
+        $this->get('phlexible_media_template.applier.image')
+            ->apply($template, $file, $file->getPhysicalPath(), $outFilename);
 
-        return new Response(file_get_contents($outFilename), 200, array('Content-type' => 'image/jpg'));
+        return $this->get('igorw_file_serve.response_factory')
+            ->create($outFilename, 'image/jpg', array(
+                    'absolute_path' => true,
+                    'inline'        => true,
+                ));
     }
 
     /**
@@ -230,7 +139,8 @@ class DataController extends Controller
      */
     public function templatesAction()
     {
-        $cropTemplates = $this->getCropTemplates();
+        $cropTemplateQueuer = $this->get('phlexible_focal_point.crop_template_queuer');
+        $cropTemplates = $cropTemplateQueuer->getCropTemplates();
 
         $data = array();
         foreach ($cropTemplates as $cropTemplate) {
@@ -260,18 +170,5 @@ class DataController extends Controller
         );
 
         return new JsonResponse(array('templates' => $data));
-    }
-
-    /**
-     * @return ImageTemplate[]
-     */
-    private function getCropTemplates()
-    {
-        return array_filter(
-            $this->get('phlexible_media_template.template_manager')->findAll(),
-            function($template) {
-                return $template instanceof ImageTemplate && $template->getMethod() === 'crop';
-            }
-        );
     }
 }

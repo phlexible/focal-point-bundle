@@ -7,3 +7,4 @@ focalpoint:
     safe_area: 'Sicherer Bereich'
     title: Titel
     save: Speichern
+    no_crop_templates: Keine Templates mit Beschneiden gefunden.
