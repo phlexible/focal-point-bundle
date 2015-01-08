@@ -8,12 +8,12 @@
 
 namespace Phlexible\Bundle\FocalPointBundle\Queue;
 
-use Phlexible\Bundle\MediaCacheBundle\Model\QueueManagerInterface;
-use Phlexible\Bundle\MediaCacheBundle\Queue\Batch;
-use Phlexible\Bundle\MediaCacheBundle\Queue\BatchResolver;
-use Phlexible\Bundle\MediaSiteBundle\Model\FileInterface;
-use Phlexible\Bundle\MediaTemplateBundle\Model\ImageTemplate;
-use Phlexible\Bundle\MediaTemplateBundle\Model\TemplateManagerInterface;
+use Phlexible\Component\MediaCache\Model\CacheManagerInterface;
+use Phlexible\Component\MediaCache\Queue\Batch;
+use Phlexible\Component\MediaCache\Queue\BatchResolver;
+use Phlexible\Component\MediaTemplate\Model\ImageTemplate;
+use Phlexible\Component\MediaTemplate\Model\TemplateManagerInterface;
+use Phlexible\Component\Volume\Model\FileInterface;
 
 /**
  * Crop template queuer
@@ -28,9 +28,9 @@ class CropTemplateQueuer
     private $templateManager;
 
     /**
-     * @var QueueManagerInterface
+     * @var CacheManagerInterface
      */
-    private $queueManager;
+    private $cacheManager;
 
     /**
      * @var BatchResolver
@@ -39,13 +39,13 @@ class CropTemplateQueuer
 
     /**
      * @param TemplateManagerInterface $templateManager
-     * @param QueueManagerInterface    $queueManager
+     * @param CacheManagerInterface    $cacheManager
      * @param BatchResolver            $batchResolver
      */
-    public function __construct(TemplateManagerInterface $templateManager, QueueManagerInterface $queueManager, BatchResolver $batchResolver)
+    public function __construct(TemplateManagerInterface $templateManager, CacheManagerInterface $cacheManager, BatchResolver $batchResolver)
     {
         $this->templateManager = $templateManager;
-        $this->queueManager = $queueManager;
+        $this->cacheManager = $cacheManager;
         $this->batchResolver = $batchResolver;
     }
 
@@ -76,8 +76,8 @@ class CropTemplateQueuer
 
         $queue = $this->batchResolver->resolve($batch);
 
-        foreach ($queue->all() as $queueItem) {
-            $this->queueManager->updateQueueItem($queueItem);
+        foreach ($queue->all() as $cacheItem) {
+            $this->cacheManager->updateCacheItem($cacheItem);
         }
     }
 }

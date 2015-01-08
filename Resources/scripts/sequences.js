@@ -1,4 +1,6 @@
-Ext.ns('Phlexible.focalpoint');
+Ext.require('Phlexible.mediamanager.FileDetailWindow');
+Ext.require('Phlexible.focalpoint.MainPanel');
+Ext.require('Phlexible.mediamanager.util.Bullets');
 
 Phlexible.mediamanager.FileDetailWindow.prototype.populateTabs =
     Phlexible.mediamanager.FileDetailWindow.prototype.populateTabs.createSequence(function() {

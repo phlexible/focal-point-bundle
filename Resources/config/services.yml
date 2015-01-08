@@ -5,7 +5,10 @@ services:
 
     phlexible_focal_point.crop_template_queuer:
         class: Phlexible\Bundle\FocalPointBundle\Queue\CropTemplateQueuer
-        arguments: [@phlexible_media_template.template_manager, @phlexible_media_cache.queue_manager, @phlexible_media_cache.queue.batch_resolver]
+        arguments:
+            - @phlexible_media_template.template_manager
+            - @phlexible_media_cache.cache_manager
+            - @phlexible_media_cache.batch_resolver
 
     # acl providers
     phlexible_focal_point.acl_provider:
@@ -13,11 +16,3 @@ services:
         public: false
         tags:
             - {name: phlexible_security.acl.provider}
-
-    # asset providers
-    phlexible_focal_point.asset_provider:
-        class: Phlexible\Bundle\FocalPointBundle\AssetProvider\FocalPointAssetProvider
-        public: false
-        arguments: [@file_locator]
-        tags:
-            - {name: phlexible_gui.asset.provider, priority: -500}

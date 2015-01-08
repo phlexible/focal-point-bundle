@@ -1,0 +1,6 @@
+{
+    "resources": {
+        "/phlexible/icons/focalpoint": "Resources/public/icons",
+        "/phlexible/scripts/focalpoint": "Resources/scripts"
+    }
+}

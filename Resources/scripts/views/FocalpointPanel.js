@@ -1,3 +1,5 @@
+Ext.provide('Phlexible.focalpoint.FocalpointPanel');
+
 Phlexible.focalpoint.FocalpointPanel = Ext.extend(Ext.Panel, {
     title: Phlexible.focalpoint.Strings.focal_point,
     strings: Phlexible.focalpoint.Strings,
