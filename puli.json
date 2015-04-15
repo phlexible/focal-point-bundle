@@ -1,6 +1,6 @@
 {
     "version": "1.0",
-    "resources": {
+    "path-mappings": {
         "/phlexible/icons/focalpoint": "Resources/public/icons",
         "/phlexible/scripts/focalpoint": "Resources/scripts"
     }
