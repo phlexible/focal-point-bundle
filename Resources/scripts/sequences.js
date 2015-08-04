@@ -4,7 +4,7 @@ Ext.require('Phlexible.mediamanager.util.Bullets');
 
 Phlexible.mediamanager.FileDetailWindow.prototype.populateTabs =
     Phlexible.mediamanager.FileDetailWindow.prototype.populateTabs.createSequence(function() {
-        if (!Phlexible.User.isGranted('focalpoint')) {
+        if (!Phlexible.User.isGranted('ROLE_FOCAL_POINT')) {
             return;
         }
 
@@ -49,6 +49,6 @@ Phlexible.mediamanager.FileDetailWindow.prototype.load =
 Phlexible.mediamanager.util.Bullets.prototype.buildBullets =
 	Phlexible.mediamanager.util.Bullets.prototype.buildBullets.createSequence(function(values) {
 		if (values.focal) {
-			this.bullets += '<img src="' + Phlexible.component('/phlexiblefocalpoint/images/bullet_focal.gif')+'" width="8" height="12" style="vertical-align: middle;" />';
+			this.bullets += '<img src="' + Phlexible.bundlePath + '/phlexiblefocalpoint/images/bullet_focal.gif' + '" width="8" height="12" style="vertical-align: middle;" />';
 		}
 	});

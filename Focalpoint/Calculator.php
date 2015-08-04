@@ -10,7 +10,7 @@ namespace Phlexible\Bundle\FocalPointBundle\Focalpoint;
 
 use Brainbits\ImageAnalyzer\ImageAnalyzer;
 use Phlexible\Bundle\FocalPointBundle\Exception\UnknownModeException;
-use Phlexible\Bundle\MediaSiteBundle\Model\FileInterface;
+use Phlexible\Component\Volume\Model\FileInterface;
 
 /**
  * Focalpoint calculator

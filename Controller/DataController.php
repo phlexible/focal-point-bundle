@@ -8,10 +8,9 @@
 
 namespace Phlexible\Bundle\FocalPointBundle\Controller;
 
-use Phlexible\Bundle\MediaCacheBundle\Queue\Batch;
+use Phlexible\Component\MediaTemplate\Model\ImageTemplate;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Phlexible\Bundle\GuiBundle\Response\ResultResponse;
-use Phlexible\Bundle\MediaTemplateBundle\Model\ImageTemplate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,6 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @author Stephan Wentz <sw@brainbits.net>
  * @Route("/focalpoint")
+ * @Security("is_granted('ROLE_FOCAL_POINT')")
  */
 class DataController extends Controller
 {
@@ -33,7 +33,6 @@ class DataController extends Controller
      *
      * @return ResultResponse
      * @Route("/get", name="focalpoint_get")
-     * @Security("is_granted('focalpoint')")
      */
     public function getAction(Request $request)
     {
@@ -42,8 +41,10 @@ class DataController extends Controller
         $width = $request->get('width');
         $height = $request->get('height');
 
-        $site  = $this->get('phlexible_media_site.site_manager')->getByFileId($fileId);
-        $file  = $site->findFile($fileId, $fileVersion);
+        $volumeManager = $this->get('phlexible_media_manager.volume_manager');
+
+        $site = $volumeManager->getByFileId($fileId);
+        $file = $site->findFile($fileId, $fileVersion);
 
         $calculator = $this->get('phlexible_focal_point.focalpoint_calculator');
         $focalpoint = $calculator->calculateDown($file, $width, $height);
@@ -75,7 +76,9 @@ class DataController extends Controller
         $width = (int) $request->get('width');
         $height = (int) $request->get('height');
 
-        $site = $this->get('phlexible_media_site.site_manager')->getByFileId($fileId);
+        $volumeManager = $this->get('phlexible_media_manager.volume_manager');
+
+        $site = $volumeManager->getByFileId($fileId);
         $file = $site->findFile($fileId, $fileVersion);
 
         $pointX = $pointX !== null ? round($pointX) : null;
@@ -106,8 +109,10 @@ class DataController extends Controller
         $fileId = $request->get('file_id');
         $fileVersion = $request->get('file_version');
 
-        $site  = $this->get('phlexible_media_site.site_manager')->getByFileId($fileId);
-        $file  = $site->findFile($fileId);
+        $volumeManager = $this->get('phlexible_media_manager.volume_manager');
+
+        $site = $volumeManager->getByFileId($fileId);
+        $file = $site->findFile($fileId, $fileVersion);
 
         $template = new ImageTemplate();
         $template

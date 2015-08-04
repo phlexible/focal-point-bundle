@@ -1,7 +1,23 @@
 {
     "version": "1.0",
+    "name": "phlexible/focal-point-bundle",
     "path-mappings": {
-        "/phlexible/icons/focalpoint": "Resources/public/icons",
-        "/phlexible/scripts/focalpoint": "Resources/scripts"
+        "/phlexible/phlexiblefocalpoint/icons": "Resources/public/icons",
+        "/phlexible/phlexiblefocalpoint/scripts": "Resources/scripts",
+        "/phlexible/phlexiblefocalpoint/styles": "Resources/styles"
+    },
+    "bindings": {
+        "880e5ff2-81fd-5f75-aca8-7fdfb93099a4": {
+            "query": "/phlexible/phlexiblefocalpoint/scripts/**/*.js",
+            "type": "phlexible/scripts"
+        },
+        "8ccc6173-8a11-5df3-b86b-257c6b40ce9e": {
+            "query": "/phlexible/phlexiblefocalpoint/styles/**/*.css",
+            "type": "phlexible/styles"
+        },
+        "8ce2d4bc-85af-55c6-88e1-7284fc2a1c31": {
+            "query": "/phlexible/phlexiblefocalpoint/icons/*.png",
+            "type": "phlexible/icons"
+        }
     }
 }
