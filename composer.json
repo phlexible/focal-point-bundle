@@ -3,6 +3,7 @@
     "description": "phlexible focal point bundle",
     "license": "proprietary",
 	"type": "symfony-bundle",
+    "keywords": ["focalpoint", "image", "crop"],
     "autoload": {
         "psr-4": {
             "Phlexible\\Bundle\\FocalPointBundle\\": ""
@@ -22,9 +23,6 @@
             }
         }
     ],
-    "config": {
-        "bin-dir": "bin"
-    },
     "extra": {
         "branch-alias": {
             "dev-master": "1.0-dev"
