@@ -9,10 +9,10 @@
 namespace Phlexible\Bundle\FocalPointBundle\Exception;
 
 /**
- * Unknown mode exception
+ * Invalid argument exception
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */
-class UnknownModeException extends InvalidArgumentException
+class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
 {
 }
