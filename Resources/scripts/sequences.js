@@ -10,7 +10,7 @@ Phlexible.mediamanager.FileDetailWindow.prototype.populateTabs =
 
         this.tabs.push({
             xtype: 'focalpoint-mainpanel',
-            disabled: this.asset_type != Phlexible.mediamanager.IMAGE
+            disabled: this.asset_type.toLowerCase() !== Phlexible.mediamanager.IMAGE.toLowerCase() && this.document_type_key !== 'pdf'
         });
     });
 
@@ -29,7 +29,7 @@ Phlexible.mediamanager.FileDetailWindow.prototype.load =
             return;
         }
 
-        if (this.asset_type.toLowerCase() != Phlexible.mediamanager.IMAGE.toLowerCase()) {
+        if (this.asset_type.toLowerCase() !== Phlexible.mediamanager.IMAGE.toLowerCase() && this.document_type_key !== 'pdf') {
             foundItem.disable();
             //foundItem.getComponent(1).clear();
         }
