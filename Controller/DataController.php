@@ -13,9 +13,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Phlexible\Bundle\GuiBundle\Response\ResultResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * Data controller
@@ -129,11 +131,11 @@ class DataController extends Controller
         $this->get('phlexible_media_template.applier.image')
             ->apply($template, $file, $file->getPhysicalPath(), $outFilename);
 
-        return $this->get('igorw_file_serve.response_factory')
-            ->create($outFilename, 'image/jpg', array(
-                    'absolute_path' => true,
-                    'inline'        => true,
-                ));
+
+        $response = new BinaryFileResponse($outFilename, 200, array('Content-Type' => 'image/jpg'));
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $file->getName());
+
+        return $response;
     }
 
     /**
