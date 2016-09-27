@@ -8,8 +8,8 @@
 
 namespace Phlexible\Bundle\FocalPointBundle\Focalpoint;
 
-use Brainbits\ImageAnalyzer\ImageAnalyzer;
 use Phlexible\Bundle\FocalPointBundle\Exception\UnknownModeException;
+use Phlexible\Component\ImageAnalyzer\ImageAnalyzer;
 use Phlexible\Component\Volume\Model\FileInterface;
 
 /**
