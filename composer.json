@@ -1,7 +1,7 @@
 {
     "name": "phlexible/focal-point-bundle",
     "description": "phlexible focal point bundle",
-    "license": "proprietary",
+    "license": "MIT",
 	"type": "symfony-bundle",
     "keywords": ["focalpoint", "image", "crop"],
     "autoload": {
@@ -13,7 +13,7 @@
         "php": ">=5.6.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.5"
+        "phpunit/phpunit": "~5.6"
     },
     "extra": {
         "branch-alias": {
