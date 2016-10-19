@@ -14,7 +14,7 @@ namespace Phlexible\Bundle\FocalPointBundle\Tests\Focalpoint;
 use Phlexible\Bundle\FocalPointBundle\Focalpoint\Focalpoint;
 
 /**
- * Focalpoint test
+ * Focalpoint test.
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */

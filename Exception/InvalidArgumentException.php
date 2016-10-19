@@ -12,7 +12,7 @@
 namespace Phlexible\Bundle\FocalPointBundle\Exception;
 
 /**
- * Invalid argument exception
+ * Invalid argument exception.
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */

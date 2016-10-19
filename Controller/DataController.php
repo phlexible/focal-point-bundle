@@ -11,11 +11,11 @@
 
 namespace Phlexible\Bundle\FocalPointBundle\Controller;
 
-use Phlexible\Component\MediaTemplate\Model\ImageTemplate;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Phlexible\Bundle\GuiBundle\Response\ResultResponse;
+use Phlexible\Component\MediaTemplate\Model\ImageTemplate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
- * Data controller
+ * Data controller.
  *
  * @author Stephan Wentz <sw@brainbits.net>
  * @Route("/focalpoint")
@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 class DataController extends Controller
 {
     /**
-     * Get action
+     * Get action.
      *
      * @param Request $request
      *
@@ -56,15 +56,15 @@ class DataController extends Controller
 
         $data = array(
             'focalpoint_active' => $focalpoint->getStatus(),
-            'focalpoint_x'      => $focalpoint->getX(),
-            'focalpoint_y'      => $focalpoint->getY(),
+            'focalpoint_x' => $focalpoint->getX(),
+            'focalpoint_y' => $focalpoint->getY(),
         );
 
         return new ResultResponse(true, '', $data);
     }
 
     /**
-     * Set action
+     * Set action.
      *
      * @param Request $request
      *
@@ -102,7 +102,7 @@ class DataController extends Controller
     }
 
     /**
-     * Image action
+     * Image action.
      *
      * @param Request $request
      *
@@ -129,7 +129,7 @@ class DataController extends Controller
         ;
 
         $tempDir = $this->container->getParameter('kernel.cache_dir');
-        $outFilename = $tempDir . $fileId . '_' . $fileVersion . '.jpg';
+        $outFilename = $tempDir.$fileId.'_'.$fileVersion.'.jpg';
 
         $this->get('phlexible_media_template.applier.image')
             ->apply($template, $file, $file->getPhysicalPath(), $outFilename);
@@ -142,7 +142,7 @@ class DataController extends Controller
     }
 
     /**
-     * Templates action
+     * Templates action.
      *
      * @return JsonResponse
      * @Route("/templates", name="focalpoint_templates")
@@ -154,11 +154,11 @@ class DataController extends Controller
 
         $data = array();
         foreach ($cropTemplates as $cropTemplate) {
-            $data[$cropTemplate->getKey() . '___' . $cropTemplate->getId()] = array(
-                'id'     => $cropTemplate->getId(),
-                'type'   => 'image',
-                'title'  => $cropTemplate->getKey(),
-                'width'  => $cropTemplate->getWidth(),
+            $data[$cropTemplate->getKey().'___'.$cropTemplate->getId()] = array(
+                'id' => $cropTemplate->getId(),
+                'type' => 'image',
+                'title' => $cropTemplate->getKey(),
+                'width' => $cropTemplate->getWidth(),
                 'height' => $cropTemplate->getHeight(),
             );
         }
@@ -171,11 +171,11 @@ class DataController extends Controller
         array_unshift(
             $data,
             array(
-                'id'     => '_safe',
-                'type'   => 'safe',
-                'title'  => $translator->trans('focalpoint.safe_area', array(), 'gui', $this->getUser()->getInterfaceLanguage('en')),
-                'width'  => 0,
-                'height' => 0
+                'id' => '_safe',
+                'type' => 'safe',
+                'title' => $translator->trans('focalpoint.safe_area', array(), 'gui', $this->getUser()->getInterfaceLanguage('en')),
+                'width' => 0,
+                'height' => 0,
             )
         );
 

@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
- * Focal point extension
+ * Focal point extension.
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */

@@ -12,7 +12,7 @@
 namespace Phlexible\Bundle\FocalPointBundle\Exception;
 
 /**
- * Unknown mode exception
+ * Unknown mode exception.
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */

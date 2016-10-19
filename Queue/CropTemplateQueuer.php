@@ -19,7 +19,7 @@ use Phlexible\Component\MediaTemplate\Model\TemplateManagerInterface;
 use Phlexible\Component\Volume\Model\FileInterface;
 
 /**
- * Crop template queuer
+ * Crop template queuer.
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */
