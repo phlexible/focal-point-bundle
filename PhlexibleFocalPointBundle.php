@@ -14,7 +14,7 @@ namespace Phlexible\Bundle\FocalPointBundle;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Focal point bundle
+ * Focal point bundle.
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */

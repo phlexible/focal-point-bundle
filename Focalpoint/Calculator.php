@@ -16,7 +16,7 @@ use Phlexible\Component\ImageAnalyzer\ImageAnalyzer;
 use Phlexible\Component\Volume\Model\FileInterface;
 
 /**
- * Focalpoint calculator
+ * Focalpoint calculator.
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */
@@ -49,10 +49,10 @@ class Calculator
     {
         $focalpoint = $file->getAttribute('focalpoint', array());
         $pointStatus = !empty($focalpoint['active']) ? (int) $focalpoint['active'] : 0;
-        $pointX      = !empty($focalpoint['x']) ? round((int) $focalpoint['x']) : null;
-        $pointY      = !empty($focalpoint['y']) ? round((int) $focalpoint['y']) : null;
+        $pointX = !empty($focalpoint['x']) ? round((int) $focalpoint['x']) : null;
+        $pointY = !empty($focalpoint['y']) ? round((int) $focalpoint['y']) : null;
 
-        list ($x, $y) = $this->calculate($file, $width, $height, $pointX, $pointY, self::MODE_DOWN);
+        list($x, $y) = $this->calculate($file, $width, $height, $pointX, $pointY, self::MODE_DOWN);
 
         return new Focalpoint($pointStatus, $x, $y);
     }
@@ -69,7 +69,7 @@ class Calculator
      */
     public function calculateUp(FileInterface $file, $width, $height, $pointStatus, $pointX, $pointY)
     {
-        list ($x, $y) = $this->calculate($file, $width, $height, $pointX, $pointY, self::MODE_UP);
+        list($x, $y) = $this->calculate($file, $width, $height, $pointX, $pointY, self::MODE_UP);
 
         return new Focalpoint($pointStatus, $x, $y);
     }
@@ -104,15 +104,16 @@ class Calculator
     }
 
     /**
-     * @param int     $imageWidth
-     * @param int     $imageHeight
-     * @param int     $tempWidth
-     * @param int     $tempHeight
-     * @param int     $pointX
-     * @param int     $pointY
-     * @param string  $mode
+     * @param int    $imageWidth
+     * @param int    $imageHeight
+     * @param int    $tempWidth
+     * @param int    $tempHeight
+     * @param int    $pointX
+     * @param int    $pointY
+     * @param string $mode
      *
      * @throws UnknownModeException
+     *
      * @return array
      */
     private function _calcPoint($imageWidth, $imageHeight, $tempWidth, $tempHeight, $pointX, $pointY, $mode)
@@ -122,9 +123,9 @@ class Calculator
 
         if ($tempWidth < $imageWidth && $tempHeight < $imageHeight) {
             $ratio = 1;
-            if ($tempWidth == 400) {
+            if ($tempWidth === 400) {
                 $ratio = $imageWidth / 400;
-            } elseif ($tempHeight == 400) {
+            } elseif ($tempHeight === 400) {
                 $ratio = $imageHeight / 400;
             }
 

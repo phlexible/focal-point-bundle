@@ -12,7 +12,7 @@
 namespace Phlexible\Bundle\FocalPointBundle\Focalpoint;
 
 /**
- * Focalpoint
+ * Focalpoint.
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */

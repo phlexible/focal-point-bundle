@@ -14,7 +14,7 @@ namespace Phlexible\Bundle\FocalPointBundle\RoleProvider;
 use Phlexible\Bundle\GuiBundle\Security\RoleProvider\RoleProvider;
 
 /**
- * Focal point role provider
+ * Focal point role provider.
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */
