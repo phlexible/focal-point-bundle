@@ -12,13 +12,14 @@
 namespace Phlexible\Bundle\FocalPointBundle\Tests\Focalpoint;
 
 use Phlexible\Bundle\FocalPointBundle\Focalpoint\Focalpoint;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Focalpoint test.
  *
  * @author Stephan Wentz <sw@brainbits.net>
  */
-class FocalpointTest extends \PHPUnit_Framework_TestCase
+class FocalpointTest extends TestCase
 {
     /**
      * @return bool
