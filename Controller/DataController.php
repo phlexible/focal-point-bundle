@@ -134,7 +134,6 @@ class DataController extends Controller
         $this->get('phlexible_media_template.applier.image')
             ->apply($template, $file, $file->getPhysicalPath(), $outFilename);
 
-
         $response = new BinaryFileResponse($outFilename, 200, array('Content-Type' => 'image/jpg'));
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $file->getName());
 
