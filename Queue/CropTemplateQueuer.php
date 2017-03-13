@@ -13,6 +13,8 @@ namespace Phlexible\Bundle\FocalPointBundle\Queue;
 
 use Phlexible\Component\MediaCache\Model\CacheManagerInterface;
 use Phlexible\Component\MediaCache\Queue\Batch;
+use Phlexible\Component\MediaCache\Queue\BatchBuilder;
+use Phlexible\Component\MediaCache\Queue\BatchProcessor;
 use Phlexible\Component\MediaCache\Queue\BatchResolver;
 use Phlexible\Component\MediaTemplate\Model\ImageTemplate;
 use Phlexible\Component\MediaTemplate\Model\TemplateManagerInterface;
@@ -36,20 +38,23 @@ class CropTemplateQueuer
     private $cacheManager;
 
     /**
-     * @var BatchResolver
+     * @var BatchProcessor
      */
-    private $batchResolver;
+    private $batchProcessor;
 
     /**
      * @param TemplateManagerInterface $templateManager
      * @param CacheManagerInterface    $cacheManager
-     * @param BatchResolver            $batchResolver
+     * @param BatchProcessor           $batchProcessor
      */
-    public function __construct(TemplateManagerInterface $templateManager, CacheManagerInterface $cacheManager, BatchResolver $batchResolver)
-    {
+    public function __construct(
+        TemplateManagerInterface $templateManager,
+        CacheManagerInterface $cacheManager,
+        BatchProcessor $batchProcessor
+    ) {
         $this->templateManager = $templateManager;
         $this->cacheManager = $cacheManager;
-        $this->batchResolver = $batchResolver;
+        $this->batchProcessor = $batchProcessor;
     }
 
     /**
@@ -70,17 +75,15 @@ class CropTemplateQueuer
      */
     public function queueCropTemplates(FileInterface $file)
     {
-        $batch = new Batch();
-        $batch->addFile($file);
+        $batchBuilder = new BatchBuilder();
+        $batchBuilder
+            ->files([$file])
+            ->templates($this->getCropTemplates());
 
-        foreach ($this->getCropTemplates() as $cropTemplate) {
-            $batch->addTemplate($cropTemplate);
-        }
+        $batch = $batchBuilder->getBatch();
 
-        $queue = $this->batchResolver->resolve($batch);
-
-        foreach ($queue->all() as $cacheItem) {
-            $this->cacheManager->updateCacheItem($cacheItem);
+        foreach ($this->batchProcessor->process($batch) as $instruction) {
+            $this->cacheManager->updateCacheItem($instruction->getCacheItem());
         }
     }
 }
