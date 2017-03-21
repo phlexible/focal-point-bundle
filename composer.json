@@ -2,7 +2,7 @@
     "name": "phlexible/focal-point-bundle",
     "description": "phlexible focal point bundle",
     "license": "MIT",
-	"type": "symfony-bundle",
+    "type": "symfony-bundle",
     "keywords": ["focalpoint", "image", "crop"],
     "autoload": {
         "psr-4": {
