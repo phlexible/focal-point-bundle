@@ -82,9 +82,9 @@ class Calculator
      * @param int           $pointY
      * @param string        $mode
      *
-     * @return Focalpoint
+     * @return array
      */
-    public function calculate(FileInterface $file, $width, $height, $pointX, $pointY, $mode)
+    private function calculate(FileInterface $file, $width, $height, $pointX, $pointY, $mode)
     {
         if ($pointX !== null && $pointY !== null) {
             $info = $this->imageAnalyzer->analyze($file->getPhysicalPath());

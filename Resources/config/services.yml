@@ -9,7 +9,7 @@ services:
         arguments:
             - "@phlexible_media_template.template_manager"
             - "@phlexible_media_cache.cache_manager"
-            - "@phlexible_media_cache.batch_resolver"
+            - "@phlexible_media_cache.batch_processor"
 
     # role providers
     phlexible_focal_point.role_provider:
